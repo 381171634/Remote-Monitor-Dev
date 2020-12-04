@@ -19,12 +19,8 @@ uint8_t app_dht11Read(dht11DataTypedef *pSrc)
     dht11_bsp.set_sda_mode(DHT11_PIN_MODE_INPUT);       //转为输入 等待应答信号
 
     timeout_us = 35;                                    //等待响应低
-    while(timeout_us--)
+    while(timeout_us-- && (dht11_bsp.read_sda() != DHT11_PIN_STATE_L))
     {
-        if(dht11_bsp.read_sda() == DHT11_PIN_STATE_L)
-        {
-            break;
-        }
         dht11_bsp.dly_us(1);
     }
 
@@ -34,13 +30,9 @@ uint8_t app_dht11Read(dht11DataTypedef *pSrc)
         goto exit;
     }
 
-    timeout_us = 88;            
-    while(timeout_us--)                                 //等待响应高
+    timeout_us = 88;                                    //等待响应高    
+    while(timeout_us-- && (dht11_bsp.read_sda() != DHT11_PIN_STATE_H))                                 
     {
-        if(dht11_bsp.read_sda() == DHT11_PIN_STATE_H)
-        {
-            break;
-        }
         dht11_bsp.dly_us(1);
     }
 
@@ -50,7 +42,17 @@ uint8_t app_dht11Read(dht11DataTypedef *pSrc)
         goto exit;
     }
 
-    while(dht11_bsp.read_sda() == DHT11_PIN_STATE_H);   //响应结束，等待开始发送数据
+    timeout_us = 10;                                    //响应结束，等待开始发送数据
+    while(timeout_us-- && (dht11_bsp.read_sda() != DHT11_PIN_STATE_L))
+    {
+        dht11_bsp.dly_us(1);
+    }   
+
+    if(timeout_us <= 0)                                 //未响应直接返回
+    {
+        res = FALSE;
+        goto exit;
+    }
 
     for(i = 0;i < 5; i++)
     {
