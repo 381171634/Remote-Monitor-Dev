@@ -13,7 +13,8 @@
                 "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\Legacy",
                 "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include",
                 "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\CMSIS\\Include",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\DHT11"
+                "e:\\Company\\Remote_monitor\\monitor_dev\\DHT11",
+                "e:\\Company\\Remote_monitor\\monitor_dev\\GPRS"
             ],
             "forcedInclude": [],
             "cStandard": "c11",

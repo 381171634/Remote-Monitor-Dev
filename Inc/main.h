@@ -50,15 +50,17 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define DHT11_VCC_Pin GPIO_PIN_14
-#define DHT11_VCC_GPIO_Port GPIOB
-#define DCDC_ENABLE_Pin GPIO_PIN_15
-#define DCDC_ENABLE_GPIO_Port GPIOB
-#define DHT11_DATA_Pin GPIO_PIN_8
-#define DHT11_DATA_GPIO_Port GPIOA
-#define SGP_IIC_CLK_Pin GPIO_PIN_11
-#define SGP_IIC_CLK_GPIO_Port GPIOA
-#define SGP30_IIC_SDA_Pin GPIO_PIN_12
+#define GPRS_RST_GPIO_Port      GPIOB
+#define GPRS_RST_Pin            GPIO_PIN_13
+#define DHT11_VCC_Pin           GPIO_PIN_14
+#define DHT11_VCC_GPIO_Port     GPIOB
+#define DCDC_ENABLE_Pin         GPIO_PIN_15
+#define DCDC_ENABLE_GPIO_Port   GPIOB
+#define DHT11_DATA_Pin          GPIO_PIN_8
+#define DHT11_DATA_GPIO_Port    GPIOA
+#define SGP_IIC_CLK_Pin         GPIO_PIN_11
+#define SGP_IIC_CLK_GPIO_Port   GPIOA
+#define SGP30_IIC_SDA_Pin       GPIO_PIN_12
 #define SGP30_IIC_SDA_GPIO_Port GPIOA
 
 

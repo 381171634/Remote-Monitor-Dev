@@ -1204,6 +1204,15 @@
                     <name>$PROJ_DIR$\..\DHT11\dht11_bsp.c</name>
                 </file>
             </group>
+            <group>
+                <name>GPRS</name>
+                <file>
+                    <name>$PROJ_DIR$\..\GPRS\gprs_app.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\GPRS\gprs_bsp.c</name>
+                </file>
+            </group>
             <file>
                 <name>$PROJ_DIR$\..\Src\adc.c</name>
             </file>

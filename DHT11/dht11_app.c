@@ -42,7 +42,7 @@ uint8_t app_dht11Read(dht11DataTypedef *pSrc)
         goto exit;
     }
 
-    timeout_us = 10;                                    //响应结束，等待开始发送数据
+    timeout_us = 56;                                    //响应结束，等待开始发送数据
     while(timeout_us-- && (dht11_bsp.read_sda() != DHT11_PIN_STATE_L))
     {
         dht11_bsp.dly_us(1);

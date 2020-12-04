@@ -356,6 +356,7 @@
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Device/ST/STM32F1xx/Include</state>
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
                     <state>$PROJ_DIR$\..\DHT11</state>
+                    <state>$PROJ_DIR$\..\GPRS</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1059,6 +1060,15 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\DHT11\dht11_bsp.c</name>
+                </file>
+            </group>
+            <group>
+                <name>GPRS</name>
+                <file>
+                    <name>$PROJ_DIR$\..\GPRS\gprs_app.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\GPRS\gprs_bsp.c</name>
                 </file>
             </group>
             <file>
