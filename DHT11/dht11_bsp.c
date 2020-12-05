@@ -1,41 +1,27 @@
 #include "dht11_bsp.h"
+#include "gpio.h"
 
-
-static void dht11_bsp_power_set(uint8_t state)
+static void dht11_bsp_init()
 {
-    if(state == DHT11_POWER_ON)
-    {
-        HAL_GPIO_WritePin(DHT11_VCC_GPIO_Port,DHT11_VCC_Pin,GPIO_PIN_SET);
-    }
-    else if(state == DHT11_POWER_OFF)
-    {
-        HAL_GPIO_WritePin(DHT11_VCC_GPIO_Port,DHT11_VCC_Pin,GPIO_PIN_RESET);
-    }
-}
-
-static void dht11_bsp_set_sda_mode(uint8_t mode)
-{
-    if(mode == DHT11_PIN_MODE_INPUT)
-    {
-        DHT11_DATA_GPIO_Port->CRH &= ~(0xf);
-        DHT11_DATA_GPIO_Port->CRH |= 0x04;
-    }
-    else if(mode == DHT11_PIN_MODE_OUTPUT)
-    {
-        DHT11_DATA_GPIO_Port->CRH &= ~(0xf);
-        DHT11_DATA_GPIO_Port->CRH |= 0x05;
-    }
+    GPIO_InitTypeDef GPIO_InitStruct;
     
-}
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
-static void dht11_bsp_write_sda(uint8_t state)
-{
-    HAL_GPIO_WritePin(DHT11_DATA_GPIO_Port,DHT11_DATA_Pin,state);
-}
+    HAL_GPIO_WritePin(DHT11_SDA_Port, DHT11_SDA_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(DHT11_POWER_Port, DHT11_POWER_Pin, GPIO_PIN_RESET);
 
-uint8_t dht11_bsp_read_sda()
-{
-    return HAL_GPIO_ReadPin(DHT11_DATA_GPIO_Port,DHT11_DATA_Pin);
+    GPIO_InitStruct.Pin = DHT11_POWER_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(DHT11_POWER_Port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = DHT11_SDA_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(DHT11_SDA_Port, &GPIO_InitStruct);
 }
 
 static void dht11_bsp_dly_ms(uint16_t ms)
@@ -54,10 +40,7 @@ static void dht11_bsp_dly_us(uint16_t us)
 }
 
 dht11_bspTypedef dht11_bsp = {
-    .power_set      = dht11_bsp_power_set,
-    .set_sda_mode   = dht11_bsp_set_sda_mode,
-    .write_sda      = dht11_bsp_write_sda,
-    .read_sda       = dht11_bsp_read_sda,
+    .init           = dht11_bsp_init,
     .dly_ms         = dht11_bsp_dly_ms,
     .dly_us         = dht11_bsp_dly_us
 };

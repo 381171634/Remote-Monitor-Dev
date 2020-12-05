@@ -2,8 +2,17 @@
 #define _GPRS_BSP_H
 
 #include "stm32f1xx_hal.h"
+#include "main.h"
 
 #define GPRS_RECV_BUF_LEN   1024
+//board
+#define GPRS_POWER_Port     DCDC_ENABLE_GPIO_Port
+#define GPRS_POWER_Pin      DCDC_ENABLE_Pin  
+#define GPRS_RESET_Port     GPRS_RST_GPIO_Port
+#define GPRS_RESET_Pin      GPRS_RST_Pin 
+//bsp fill
+#define GPRS_POWER_ON       HAL_GPIO_WritePin(DCDC_ENABLE_GPIO_Port,DCDC_ENABLE_Pin,GPIO_PIN_SET)
+#define GPRS_POWER_OFF      HAL_GPIO_WritePin(DCDC_ENABLE_GPIO_Port,DCDC_ENABLE_Pin,GPIO_PIN_RESET)
 
 typedef struct{
     void (*reset)(void);
@@ -20,5 +29,5 @@ typedef struct{
 
 extern gprs_RBTypedef gprsRB;
 extern gprs_bspTypedef gprs_bsp;
-extern uint8_t stm32_hal_uart_irq_rx;
+
 #endif

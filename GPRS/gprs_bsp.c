@@ -1,17 +1,22 @@
 #include "gprs_bsp.h"
 #include "usart.h"
+#include "stm32f1xx_it.h"
 
 gprs_RBTypedef gprsRB = {{0},0,0};
-uint8_t stm32_hal_uart_irq_rx = 0xff;
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void USART1_IRQHandler()
 {
-    if(huart->Instance == USART1)
+    uint32_t isrflags   = READ_REG(huart1.Instance->SR);
+    if(isrflags & UART_FLAG_RXNE)
     {
-        gprsRB.pRecvBuf[(gprsRB.pW++) % GPRS_RECV_BUF_LEN] = stm32_hal_uart_irq_rx;
-        HAL_UART_Receive_IT(&huart1,&stm32_hal_uart_irq_rx,1);
+        gprsRB.pRecvBuf[(gprsRB.pW++) % GPRS_RECV_BUF_LEN] = huart1.Instance->DR;
+    }
+    else
+    {
+        HAL_UART_IRQHandler(&huart1);
     }
 }
+
 
 static void gprs_bsp_dly_ms(uint16_t ms)
 {

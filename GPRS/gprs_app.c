@@ -54,7 +54,7 @@ void gprs_task()
 {
     uint8_t res = 0;
 
-    HAL_UART_Receive_IT(&huart1,&stm32_hal_uart_irq_rx,1);
+    
 
     gprs_bsp.dly_ms(1000);
     uint8_t data[] = {0xa5,0x5a,0x11,0x00,0x03,0x31

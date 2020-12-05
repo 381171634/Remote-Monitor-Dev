@@ -3,20 +3,39 @@
 
 #include "stm32f1xx_hal.h"
 
-#define     DHT11_POWER_ON          1
-#define     DHT11_POWER_OFF         0
+//board define
+#define     DHT11_POWER_Port        DHT11_VCC_GPIO_Port
+#define     DHT11_POWER_Pin         DHT11_VCC_Pin
+#define     DHT11_SDA_Port          DHT11_DATA_GPIO_Port
+#define     DHT11_SDA_Pin           DHT11_DATA_Pin
 
-#define     DHT11_PIN_MODE_INPUT    0
-#define     DHT11_PIN_MODE_OUTPUT   1
+//bsp fill
+#define     DHT11_POWER_ON          HAL_GPIO_WritePin(DHT11_POWER_Port,DHT11_POWER_Pin,GPIO_PIN_SET)
+#define     DHT11_POWER_OFF         HAL_GPIO_WritePin(DHT11_POWER_Port,DHT11_POWER_Pin,GPIO_PIN_RESET)
 
-#define     DHT11_PIN_STATE_H       1
+#define     DHT11_SDA_WRITE_H       HAL_GPIO_WritePin(DHT11_SDA_Port,DHT11_SDA_Pin,GPIO_PIN_SET)
+#define     DHT11_SDA_WRITE_L       HAL_GPIO_WritePin(DHT11_SDA_Port,DHT11_SDA_Pin,GPIO_PIN_RESET)
+
+#define     DHT11_SDA_MODE_INPUT    do\
+                                    {\
+                                        DHT11_SDA_Port->CRH &= ~(0xf);\
+                                        DHT11_SDA_Port->CRH |= 0x04;\
+                                    }while(0);
+
+#define     DHT11_SDA_MODE_OUTPUT   do\
+                                    {\
+                                        DHT11_SDA_Port->CRH &= ~(0xf);\
+                                        DHT11_SDA_Port->CRH |= 0x05;\
+                                    }while(0);
+
+#define     DHT11_SDA_READ          HAL_GPIO_ReadPin(DHT11_SDA_Port,DHT11_SDA_Pin)
+
 #define     DHT11_PIN_STATE_L       0
+#define     DHT11_PIN_STATE_H       1
+
 
 typedef struct{
-    void    (*power_set)(uint8_t state);
-    void    (*set_sda_mode)(uint8_t mode);
-    void    (*write_sda)(uint8_t state);
-    uint8_t (*read_sda)(void);
+    void    (*init)(void);
     void    (*dly_ms)(uint16_t ms);
     void    (*dly_us)(uint16_t us);
 }dht11_bspTypedef;
