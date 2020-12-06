@@ -15,7 +15,9 @@
                 "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\CMSIS\\Include",
                 "e:\\Company\\Remote_monitor\\monitor_dev\\DHT11",
                 "e:\\Company\\Remote_monitor\\monitor_dev\\GPRS",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\app"
+                "e:\\Company\\Remote_monitor\\monitor_dev\\app",
+                "e:\\Company\\Remote_monitor\\monitor_dev\\SGP30",
+                "${workspaceFolder}/**"
             ],
             "forcedInclude": [],
             "cStandard": "c11",

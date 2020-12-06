@@ -1213,6 +1213,15 @@
                     <name>$PROJ_DIR$\..\GPRS\gprs_bsp.c</name>
                 </file>
             </group>
+            <group>
+                <name>sgp30</name>
+                <file>
+                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.h</name>
+                </file>
+            </group>
             <file>
                 <name>$PROJ_DIR$\..\Src\adc.c</name>
             </file>

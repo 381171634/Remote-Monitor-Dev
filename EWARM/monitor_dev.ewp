@@ -358,6 +358,7 @@
                     <state>$PROJ_DIR$\..\DHT11</state>
                     <state>$PROJ_DIR$\..\GPRS</state>
                     <state>$PROJ_DIR$\..\app</state>
+                    <state>$PROJ_DIR$\..\SGP30</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1070,6 +1071,15 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\GPRS\gprs_bsp.c</name>
+                </file>
+            </group>
+            <group>
+                <name>sgp30</name>
+                <file>
+                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.h</name>
                 </file>
             </group>
             <file>

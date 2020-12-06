@@ -182,6 +182,8 @@ void gprs_task()
                 gprs_tm.step = GPRS_STEP_RESET;
             }
             break;
+        case GPRS_STEP_IN_TRANS:
+            break;
 
         default:
             break;

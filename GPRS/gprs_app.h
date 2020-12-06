@@ -12,6 +12,7 @@ typedef enum{
     GPRS_STEP_CGREG,
     GPRS_STEP_MYNETACT,
     GPRS_STEP_TRANS,
+    GPRS_STEP_IN_TRANS,
     GPRS_STEP_POWER_OFF,
     GPRS_STEP_FINISH,
 }gprsStepTypedef;

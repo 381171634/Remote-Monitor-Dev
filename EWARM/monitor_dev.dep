@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <fileVersion>4</fileVersion>
-    <fileChecksum>3396502991</fileChecksum>
+    <fileChecksum>1966875097</fileChecksum>
     <configuration>
         <name>monitor_dev</name>
         <outputs>
@@ -175,6 +175,10 @@
             <file>$PROJ_DIR$\monitor_dev\Obj\system_stm32f1xx.__cstat.et</file>
             <file>$PROJ_DIR$\monitor_dev\Obj\stm32f1xx_hal_rcc.pbi</file>
             <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$PROJ_DIR$\..\SGP30\sgp30_bsp.h</file>
+            <file>$PROJ_DIR$\..\SGP30\sgp30_bsp.c</file>
+            <file>$PROJ_DIR$\monitor_dev\Obj\sgp30_bsp.o</file>
+            <file>$PROJ_DIR$\monitor_dev\Obj\sgp30_bsp.pbi</file>
         </outputs>
         <file>
             <name>[ROOT_NODE]</name>
@@ -294,7 +298,7 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 66 156 144 123 53 129 30 99 130 24 50 38 116 85 31 90 110 94 135 70 76 22 137 106 27 133 97 169 149 100 64 98 47 109 126 95</file>
+                    <file> 135 85 27 31 137 144 110 76 53 129 90 94 70 22 106 133 97 130 24 50 38 116 123 66 30 99 156 169 149 100 64 98 47 109 126 95</file>
                 </tool>
             </inputs>
         </file>
@@ -637,11 +641,11 @@
             <inputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 85 123 66 31 144 27 133 99 156 130 38 24 50 169 53 149 129 98 97 30 47 106 90 109 110 126 94 135 95 70 116 76 22 100 137 91 118 84 64 92 36 28</file>
+                    <file> 85 123 66 31 144 27 133 99 156 130 38 24 50 169 53 149 129 98 97 30 47 106 90 109 110 126 94 135 95 70 116 76 22 100 137 91 118 84 64 92 36 28 170</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 129 27 144 53 85 84 91 92 66 106 133 97 130 24 50 38 116 123 118 64 28 31 90 110 94 135 70 76 22 137 30 99 156 169 149 100 36 98 47 109 126 95</file>
+                    <file> 110 156 85 170 76 130 95 84 31 135 137 38 123 91 92 90 94 70 22 30 99 98 149 109 126 144 118 64 28 66 106 27 133 97 47 36 53 24 50 169 129 116 100</file>
                 </tool>
             </inputs>
         </file>
@@ -687,7 +691,7 @@
             <inputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 83 140 78 39 139 33 42 58 69 127 32 56 75 146 37 61 72 119 108 20 155 77 79 52 87 161 25 57 143 45 93 44 121 65 105</file>
+                    <file> 83 140 78 39 139 33 42 58 69 172 127 32 56 75 146 37 61 72 119 108 20 155 77 79 52 87 161 25 57 143 45 93 44 121 65 105</file>
                 </tool>
             </inputs>
         </file>
@@ -985,6 +989,29 @@
                 <tool>
                     <name>BICOMP</name>
                     <file> 30 123 144 99 53 129 66 156 130 24 50 38 116 85 31 90 110 94 135 70 76 22 137 106 27 133 97 169 149 100 98 47 109 126 95</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 172</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 173</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 170 123 66 85 31 144 27 133 99 156 130 38 24 50 169 53 149 129 98 97 30 47 106 90 109 110 126 94 135 95 70 116 76 22 100 137 64 36</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 85 135 27 144 123 31 137 169 38 36 110 76 149 100 64 90 94 70 22 106 133 97 53 130 24 50 129 116 170 66 30 99 156 98 47 109 126 95</file>
                 </tool>
             </inputs>
         </file>
