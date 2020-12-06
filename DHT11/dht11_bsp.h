@@ -35,9 +35,10 @@
 
 
 typedef struct{
-    void    (*init)(void);
+    void    (*gpio_init)(void);
     void    (*dly_ms)(uint16_t ms);
     void    (*dly_us)(uint16_t us);
+    uint32_t(*getTick)();
 }dht11_bspTypedef;
 
 extern dht11_bspTypedef dht11_bsp;

@@ -54,34 +54,33 @@ void gprs_task()
 {
     uint8_t res = 0;
 
-    
-
+    gprs_bsp.reset();
+    __HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
+	
     gprs_bsp.dly_ms(1000);
     uint8_t data[] = {0xa5,0x5a,0x11,0x00,0x03,0x31
     ,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x4b};
-    while(1)
+    //while(1)
     {
+        res = gprs_ATcmdTx("AT\r","OK",1000,10);
+
+        res = gprs_ATcmdTx("AT+CPIN?\r","OK",1000,10);  
+
+        res = gprs_ATcmdTx("AT+CGREG?\r","CGREG:0,5",1000,10);  
+
+        res = gprs_ATcmdTx("AT$MYNETACT=0,1\r","OK",5000,3);
+
         res = gprs_ATcmdTx("AT+TCPTRANS=106.13.1.239,8888\r","OK",1000,3);
-        if(res == TRUE)
-        {
-            
-            printf("gprs ok\n");
-        }
-        else
-        {
-            printf("gprs ok\n");
-        }
 		
+        gprs_bsp.dly_ms(2000);
 		HAL_UART_Transmit(&huart1,data,sizeof(data),100);
         gprs_bsp.dly_ms(1000);
 		gprs_bsp.dly_ms(1000);
 		gprs_bsp.dly_ms(1000);
 		gprs_bsp.dly_ms(1000);
 		gprs_bsp.dly_ms(1000);
-		gprs_bsp.dly_ms(1000);
-		gprs_bsp.dly_ms(1000);gprs_bsp.dly_ms(1000);
-		gprs_bsp.dly_ms(1000);
-		gprs_bsp.dly_ms(1000);
+		
+        while(1);
         
     }
 }

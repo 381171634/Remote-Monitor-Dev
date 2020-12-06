@@ -15,6 +15,7 @@
 #define GPRS_POWER_OFF      HAL_GPIO_WritePin(DCDC_ENABLE_GPIO_Port,DCDC_ENABLE_Pin,GPIO_PIN_RESET)
 
 typedef struct{
+    void (*gpio_init)(void);
     void (*reset)(void);
     void (*dly_ms)(uint16_t ms);
     uint32_t (*getTickMs)(void);

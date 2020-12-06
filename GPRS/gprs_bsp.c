@@ -17,6 +17,21 @@ void USART1_IRQHandler()
     }
 }
 
+static void gprs_bsp_gpio_init()
+{
+    GPIO_InitTypeDef GPIO_InitStruct;
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    HAL_GPIO_WritePin(GPRS_RESET_Port, GPRS_RESET_Pin, GPIO_PIN_RESET);
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPRS_POWER_Port, GPRS_POWER_Pin, GPIO_PIN_RESET);
+
+    GPIO_InitStruct.Pin = GPRS_POWER_Pin|GPRS_RESET_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
 
 static void gprs_bsp_dly_ms(uint16_t ms)
 {
@@ -25,9 +40,9 @@ static void gprs_bsp_dly_ms(uint16_t ms)
 
 static void gprs_bsp_reset(void)
 {
-    HAL_GPIO_WritePin(GPRS_RST_GPIO_Port,GPRS_RST_Pin,GPIO_PIN_RESET);
-    gprs_bsp_dly_ms(150);
     HAL_GPIO_WritePin(GPRS_RST_GPIO_Port,GPRS_RST_Pin,GPIO_PIN_SET);
+    gprs_bsp_dly_ms(150);
+    HAL_GPIO_WritePin(GPRS_RST_GPIO_Port,GPRS_RST_Pin,GPIO_PIN_RESET);
 
 }
 
@@ -47,6 +62,7 @@ static uint32_t gprs_bsp_getTick(void)
 }
 
 gprs_bspTypedef gprs_bsp = {
+    .gpio_init  =   gprs_bsp_gpio_init,
     .reset      =   gprs_bsp_reset,
     .dly_ms     =   gprs_bsp_dly_ms,
     .getTickMs  =   gprs_bsp_getTick,

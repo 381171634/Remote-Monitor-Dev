@@ -1,7 +1,7 @@
 #include "dht11_bsp.h"
 #include "gpio.h"
 
-static void dht11_bsp_init()
+static void dht11_bsp_gpio_init()
 {
     GPIO_InitTypeDef GPIO_InitStruct;
     
@@ -39,8 +39,14 @@ static void dht11_bsp_dly_us(uint16_t us)
     }
 }
 
+static uint32_t dht11_bsp_getTick()
+{
+    return HAL_GetTick();
+}
+
 dht11_bspTypedef dht11_bsp = {
-    .init           = dht11_bsp_init,
+    .gpio_init      = dht11_bsp_gpio_init,
     .dly_ms         = dht11_bsp_dly_ms,
-    .dly_us         = dht11_bsp_dly_us
+    .dly_us         = dht11_bsp_dly_us,
+    .getTick        = dht11_bsp_getTick,
 };

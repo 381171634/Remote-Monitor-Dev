@@ -357,6 +357,7 @@
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
                     <state>$PROJ_DIR$\..\DHT11</state>
                     <state>$PROJ_DIR$\..\GPRS</state>
+                    <state>$PROJ_DIR$\..\app</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>

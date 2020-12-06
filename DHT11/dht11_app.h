@@ -3,6 +3,22 @@
 
 #include "stm32f1xx_hal.h"
 
+#define DHT11_AVERAGE_CNT   3
+
+typedef enum{
+    DHT11_STEP_START = 0,
+    DHT11_STEP_READ,
+    DHT11_STEP_FINISH
+}dht11StepTypedef;
+
+typedef struct{
+    uint32_t dht11_wet_sum;
+    uint32_t dht11_temp_sum;
+    uint16_t readCnt;
+    uint16_t dht11_wet_avg;
+    uint16_t dht11_temp_avg;
+}dht11ResTypedef;
+
 typedef struct{
     uint8_t wet_H;
     uint8_t wet_L;
@@ -11,6 +27,6 @@ typedef struct{
     uint8_t sum;
 }dht11DataTypedef;
 
-uint8_t app_dht11Read(dht11DataTypedef *pSrc);
+void app_dht11Task();
 
 #endif

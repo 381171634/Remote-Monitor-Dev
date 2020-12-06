@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "dht11_bsp.h": "c"
+        "dht11_bsp.h": "c",
+        "dht11_app.h": "c",
+        "common.h": "c"
     }
 }

@@ -111,21 +111,12 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   
-  dht11DataTypedef data;
-  uint8_t res;
+
   while (1)
   {
-      gprs_task();
+      app_dht11Task();
 
-      if(app_dht11Read(&data) != TRUE)
-      {
-        printf("false\n");
-      }
-      else
-      {
-        printf("true\n");
-        printf("temp:%d.%d℃ wet:%d.%d°H\n",data.temp_H,data.temp_L,data.wet_H,data.wet_L);
-      }
+      //gprs_task();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
