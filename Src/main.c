@@ -67,7 +67,7 @@ static void MX_NVIC_Init(void);
 /* USER CODE BEGIN 0 */
 #include "dht11_app.h"
 #include "gprs_app.h"
-#include "sgp30_bsp.h"
+#include "sgp30_app.h"
 /* USER CODE END 0 */
 
 /**
@@ -115,9 +115,9 @@ int main(void)
 	while (1)
 	{
 		sgp30test();
-		//app_dht11Task();
+		app_dht11Task();
 
-		//gprs_task();
+		gprs_task();
 
 		/* USER CODE END WHILE */
 

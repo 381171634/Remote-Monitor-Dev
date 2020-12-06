@@ -1076,10 +1076,10 @@
             <group>
                 <name>sgp30</name>
                 <file>
-                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.c</name>
+                    <name>$PROJ_DIR$\..\SGP30\sgp30_app.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.h</name>
+                    <name>$PROJ_DIR$\..\SGP30\sgp30_bsp.c</name>
                 </file>
             </group>
             <file>
