@@ -2,12 +2,14 @@
 #define _DHT11_APP_H
 
 #include "stm32f1xx_hal.h"
+#include "common.h"
 
 #define DHT11_AVERAGE_CNT   3
 
 typedef enum{
     DHT11_STEP_START = 0,
     DHT11_STEP_READ,
+    DHT11_STEP_POWER_OFF,
     DHT11_STEP_FINISH
 }dht11StepTypedef;
 
@@ -28,5 +30,6 @@ typedef struct{
 }dht11DataTypedef;
 
 void app_dht11Task();
+extern taskManageTypedef dht11_tm;
 
 #endif

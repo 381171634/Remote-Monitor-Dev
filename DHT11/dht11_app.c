@@ -66,17 +66,20 @@ void app_dht11Task()
             else
             {
                 DBG_PRT("dht11 read  fail\n");
+                dht11_tm.errCnt++;
                 dht11_tm.step = DHT11_STEP_START;
             }
             
+            break;
 
+        case DHT11_STEP_POWER_OFF:
+            DHT11_POWER_OFF;
+            dht11_tm.step++;
             break;
 
         case DHT11_STEP_FINISH:
-            DHT11_POWER_OFF;
             break;
         default:
-            
             break;
     }
 }

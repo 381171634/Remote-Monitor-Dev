@@ -2,12 +2,13 @@
 #include "usart.h"
 #include "stm32f1xx_it.h"
 
-gprs_RBTypedef gprsRB = {{0},0,0};
+gprs_RBTypedef gprsRB = {{0},0,0,0};
 
 void USART1_IRQHandler()
 {
+    uint8_t idle_clr;
     uint32_t isrflags   = READ_REG(huart1.Instance->SR);
-    if(isrflags & UART_FLAG_RXNE)
+    if(isrflags & (UART_FLAG_RXNE | UART_FLAG_IDLE) )
     {
         gprsRB.pRecvBuf[(gprsRB.pW++) % GPRS_RECV_BUF_LEN] = huart1.Instance->DR;
     }
@@ -17,7 +18,7 @@ void USART1_IRQHandler()
     }
 }
 
-static void gprs_bsp_gpio_init()
+static void gprs_bsp_init()
 {
     GPIO_InitTypeDef GPIO_InitStruct;
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -31,6 +32,9 @@ static void gprs_bsp_gpio_init()
     GPIO_InitStruct.Pull = GPIO_PULLDOWN;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    __HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
+    __HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);
 }
 
 static void gprs_bsp_dly_ms(uint16_t ms)
@@ -62,7 +66,7 @@ static uint32_t gprs_bsp_getTick(void)
 }
 
 gprs_bspTypedef gprs_bsp = {
-    .gpio_init  =   gprs_bsp_gpio_init,
+    .init       =   gprs_bsp_init,
     .reset      =   gprs_bsp_reset,
     .dly_ms     =   gprs_bsp_dly_ms,
     .getTickMs  =   gprs_bsp_getTick,
