@@ -18,23 +18,26 @@
 
 #define SGP30_SDA_READ          HAL_GPIO_ReadPin(SGP30_SDA_GPIO_PORT,SGP30_SDA_GPIO_PIN)
 
-#define SGP30_read  0xb1  //SGP30µÄ¶ÁµØÖ·
-#define SGP30_write 0xb0  //SGP30µÄÐ´µØÖ·
+#define SGP30_read  0xb1  //SGP30ï¿½Ä¶ï¿½ï¿½ï¿½Ö·
+#define SGP30_write 0xb0  //SGP30ï¿½ï¿½Ð´ï¿½ï¿½Ö·
 
 void SGP30_DELAY_US(uint16_t us);
 void SGP30_DELAY_MS(uint16_t ms);
+uint32_t SGP30_GET_TICK();
+uint8_t sgp30_crc(uint8_t *p,uint8_t len);
+uint8_t SGP30_Reset();
 
-void SGP30_IIC_Start(void);				//·¢ËÍIIC¿ªÊ¼ÐÅºÅ
-void SGP30_IIC_Stop(void);	  			//·¢ËÍIICÍ£Ö¹ÐÅºÅ
-void SGP30_IIC_Send_Byte(uint8_t txd);			//IIC·¢ËÍÒ»¸ö×Ö½Ú
-uint16_t SGP30_IIC_Read_Byte(unsigned char ack);//IIC¶ÁÈ¡Ò»¸ö×Ö½Ú
-uint8_t SGP30_IIC_Wait_Ack(void); 				//IICµÈ´ýACKÐÅºÅ
-void SGP30_IIC_Ack(void);					//IIC·¢ËÍACKÐÅºÅ
-void SGP30_IIC_NAck(void);				//IIC²»·¢ËÍACKÐÅºÅ
+void SGP30_IIC_Start(void);				//ï¿½ï¿½ï¿½ï¿½IICï¿½ï¿½Ê¼ï¿½Åºï¿½
+void SGP30_IIC_Stop(void);	  			//ï¿½ï¿½ï¿½ï¿½IICÍ£Ö¹ï¿½Åºï¿½
+void SGP30_IIC_Send_Byte(uint8_t txd);			//IICï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½
+uint16_t SGP30_IIC_Read_Byte(unsigned char ack);//IICï¿½ï¿½È¡Ò»ï¿½ï¿½ï¿½Ö½ï¿½
+uint8_t SGP30_IIC_Wait_Ack(void); 				//IICï¿½È´ï¿½ACKï¿½Åºï¿½
+void SGP30_IIC_Ack(void);					//IICï¿½ï¿½ï¿½ï¿½ACKï¿½Åºï¿½
+void SGP30_IIC_NAck(void);				//IICï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ACKï¿½Åºï¿½
 void SGP30_IIC_Write_One_Byte(uint8_t daddr,uint8_t addr,uint8_t data);
 uint8_t SGP30_IIC_Read_One_Byte(uint8_t daddr,uint8_t addr);	
 void SGP30_Init(void);				  
-void SGP30_Write(uint8_t a, uint8_t b);
+uint8_t SGP30_Write(uint8_t *pSrc,uint16_t len);
 uint8_t SGP30_Read(uint32_t *pDes);
 
 

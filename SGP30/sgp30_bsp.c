@@ -2,7 +2,7 @@
 #include "gpio.h"
 #include "common.h"
 
-static uint8_t sgp30_crc(uint8_t *p,uint8_t len)
+uint8_t sgp30_crc(uint8_t *p,uint8_t len)
 {
 	uint8_t poly = 0x31;
 	volatile uint8_t crc = 0xff;
@@ -41,6 +41,11 @@ void SGP30_DELAY_MS(uint16_t ms)
 	HAL_Delay(ms);
 }
 
+uint32_t SGP30_GET_TICK()
+{
+	return HAL_GetTick();
+}
+
 void SGP30_GPIO_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
@@ -68,7 +73,7 @@ void SDA_IN(void)
 	SGP30_SDA_GPIO_PORT->CRH |= (0x04 << 16);
 }
 
-//²úÉúIICÆğÊ¼ĞÅºÅ
+//äº§ç”ŸIICèµ·å§‹ä¿¡å·
 void SGP30_IIC_Start(void)
 {
 	SDA_OUT();
@@ -78,10 +83,10 @@ void SGP30_IIC_Start(void)
 
 	SGP30_SDA_L; //START:when CLK is high,DATA change form high to low
 	SGP30_DELAY_US(20);
-	SGP30_SCL_L; //Ç¯×¡I2C×ÜÏß£¬×¼±¸·¢ËÍ»ò½ÓÊÕÊı¾İ
+	SGP30_SCL_L; //é’³ä½I2Cæ€»çº¿ï¼Œå‡†å¤‡å‘é€æˆ–æ¥æ”¶æ•°æ®
 }
 
-//²úÉúIICÍ£Ö¹ĞÅºÅ
+//äº§ç”ŸIICåœæ­¢ä¿¡å·
 void SGP30_IIC_Stop(void)
 {
 	SDA_OUT();
@@ -89,13 +94,13 @@ void SGP30_IIC_Stop(void)
 	SGP30_SDA_L; //STOP:when CLK is high DATA change form low to high
 	SGP30_DELAY_US(20);
 	SGP30_SCL_H;
-	SGP30_SDA_H; //·¢ËÍI2C×ÜÏß½áÊøĞÅºÅ
+	SGP30_SDA_H; //å‘é€I2Cæ€»çº¿ç»“æŸä¿¡å·
 	SGP30_DELAY_US(20);
 }
 
-//µÈ´ıÓ¦´ğĞÅºÅµ½À´
-//·µ»ØÖµ£º1£¬½ÓÊÕÓ¦´ğÊ§°Ü
-//        0£¬½ÓÊÕÓ¦´ğ³É¹¦
+//ç­‰å¾…åº”ç­”ä¿¡å·åˆ°æ¥
+//è¿”å›å€¼ï¼š1ï¼Œæ¥æ”¶åº”ç­”å¤±è´¥
+//        0ï¼Œæ¥æ”¶åº”ç­”æˆåŠŸ
 uint8_t SGP30_IIC_Wait_Ack(void)
 {
 	uint8_t ucErrTime = 0;
@@ -110,14 +115,14 @@ uint8_t SGP30_IIC_Wait_Ack(void)
 		if (ucErrTime > 250)
 		{
 			SGP30_IIC_Stop();
-			return 1;
+			return FALSE;
 		}
 	}
-	SGP30_SCL_L; //Ê±ÖÓÊä³ö0
-	return 0;
+	SGP30_SCL_L;  //æ—¶é’Ÿè¾“å‡º0
+	return TRUE;
 }
 
-//²úÉúACKÓ¦´ğ
+//äº§ç”ŸACKåº”ç­”
 void SGP30_IIC_Ack(void)
 {
 	SGP30_SCL_L;
@@ -129,7 +134,7 @@ void SGP30_IIC_Ack(void)
 	SGP30_SCL_L;
 }
 
-//²»²úÉúACKÓ¦´ğ
+//ä¸äº§ç”ŸACKåº”ç­”
 void SGP30_IIC_NAck(void)
 {
 	SGP30_SCL_L;
@@ -141,15 +146,15 @@ void SGP30_IIC_NAck(void)
 	SGP30_SCL_L;
 }
 
-//IIC·¢ËÍÒ»¸ö×Ö½Ú
-//·µ»Ø´Ó»úÓĞÎŞÓ¦´ğ
-//1£¬ÓĞÓ¦´ğ
-//0£¬ÎŞÓ¦´ğ
+//IICå‘é€ä¸€ä¸ªå­—èŠ‚
+//è¿”å›ä»æœºæœ‰æ— åº”ç­”
+//1ï¼Œæœ‰åº”ç­”
+//0ï¼Œæ— åº”ç­”
 void SGP30_IIC_Send_Byte(uint8_t txd)
 {
 	uint8_t t;
 	SDA_OUT();
-	SGP30_SCL_L; //À­µÍÊ±ÖÓ¿ªÊ¼Êı¾İ´«Êä
+	SGP30_SCL_L; //æ‹‰ä½æ—¶é’Ÿå¼€å§‹æ•°æ®ä¼ è¾“
 	for (t = 0; t < 8; t++)
 	{
 		if ((txd & 0x80) >> 7)
@@ -166,7 +171,7 @@ void SGP30_IIC_Send_Byte(uint8_t txd)
 	SGP30_DELAY_US(20);
 }
 
-//¶Á1¸ö×Ö½Ú£¬ack=1Ê±£¬·¢ËÍACK£¬ack=0£¬·¢ËÍnACK
+//è¯»1ä¸ªå­—èŠ‚ï¼Œack=1æ—¶ï¼Œå‘é€ACKï¼Œack=0ï¼Œå‘é€nACK
 uint16_t SGP30_IIC_Read_Byte(uint8_t ack)
 {
 	uint8_t i;
@@ -183,42 +188,63 @@ uint16_t SGP30_IIC_Read_Byte(uint8_t ack)
 		SGP30_DELAY_US(20);
 	}
 	if (!ack)
-		SGP30_IIC_NAck(); //·¢ËÍnACK
+		SGP30_IIC_NAck(); //å‘é€ACK
 	else
-		SGP30_IIC_Ack(); //·¢ËÍACK
+		SGP30_IIC_Ack(); //å‘é€ACK
 	return receive;
 }
 
-//³õÊ¼»¯IIC½Ó¿Ú
+//åˆå§‹åŒ–IICæ¥å£
 void SGP30_Init(void)
 {
+	uint16_t cmd = 0x0820;
 	SGP30_GPIO_Init();
 	SGP30_DELAY_MS(5);
-	SGP30_Write(0x20, 0x03);
+	SGP30_Write((uint8_t *)&cmd,2);
 	//	SGP30_ad_write(0x20,0x61);
 	//	SGP30_ad_write(0x01,0x00);
 }
 
-void SGP30_Write(uint8_t a, uint8_t b)
+uint8_t SGP30_Write(uint8_t *pSrc,uint16_t len)
 {
+
 	SGP30_IIC_Start();
-	SGP30_IIC_Send_Byte(SGP30_write); //·¢ËÍÆ÷¼şµØÖ·+Ğ´Ö¸Áî
-	SGP30_IIC_Wait_Ack();
-	SGP30_IIC_Send_Byte(a); //·¢ËÍ¿ØÖÆ×Ö½Ú
-	SGP30_IIC_Wait_Ack();
-	SGP30_IIC_Send_Byte(b);
-	SGP30_IIC_Wait_Ack();
+	SGP30_IIC_Send_Byte(SGP30_write); //å‘é€å™¨ä»¶åœ°å€+å†™æŒ‡ä»¤
+	if(SGP30_IIC_Wait_Ack() ==FALSE)
+	{
+		return FALSE;
+	}
+
+	while(len--)
+	{
+		SGP30_IIC_Send_Byte(*(pSrc++)); 
+		if(SGP30_IIC_Wait_Ack() ==FALSE)
+		{
+			return FALSE;
+		}
+	}
+	
 	SGP30_IIC_Stop();
 	SGP30_DELAY_MS(100);
+
+	return TRUE;
 }
 
-void SGP30_Reset()
+uint8_t SGP30_Reset()
 {
 	SGP30_IIC_Start();
 	SGP30_IIC_Send_Byte(0x00); 
-	SGP30_IIC_Wait_Ack();
+	if(SGP30_IIC_Wait_Ack() == FALSE)
+	{
+		return FALSE;
+	}
 	SGP30_IIC_Send_Byte(0x06);
-	SGP30_IIC_Wait_Ack();
+	if(SGP30_IIC_Wait_Ack() == FALSE)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 uint8_t SGP30_Read(uint32_t *pDes)
@@ -228,7 +254,7 @@ uint8_t SGP30_Read(uint32_t *pDes)
 	uint8_t i;
 
 	SGP30_IIC_Start();
-	SGP30_IIC_Send_Byte(SGP30_read); 	//·¢ËÍÆ÷¼şµØÖ·+¶ÁÖ¸Áî
+	SGP30_IIC_Send_Byte(SGP30_read); 	//å‘é€å™¨ä»¶åœ°å€+è¯»æŒ‡ä»¤
 	SGP30_IIC_Wait_Ack();
 
 	for(i = 0;i < 6; i++)

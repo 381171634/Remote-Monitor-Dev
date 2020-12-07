@@ -5,18 +5,10 @@
             "name": "IAR",
             "defines": [
                 "USE_HAL_DRIVER=",
-                "STM32F103xB="
+                "STM32F103xB=",
             ],
             "includePath": [
-                "e:\\Company\\Remote_monitor\\monitor_dev\\Inc",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\STM32F1xx_HAL_Driver\\Inc",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\Legacy",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\Drivers\\CMSIS\\Include",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\DHT11",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\GPRS",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\app",
-                "e:\\Company\\Remote_monitor\\monitor_dev\\SGP30"
+                "${workspaceFolder}/**",
             ],
             "forcedInclude": [],
             "cStandard": "c11",

@@ -3,7 +3,7 @@
 #include "common.h"
 
 taskManageTypedef dht11_tm = {DHT11_STEP_START,0,0};
-dht11ResTypedef dht11Res = {0,0,0,0,0};
+dht11ResTypedef dht11Res;
 
 static uint8_t app_dht11Read(dht11DataTypedef *pSrc);
 
@@ -11,6 +11,7 @@ void app_dht11Task()
 {
     int i;
     uint8_t res;
+    int tempRead;
     dht11DataTypedef readData = {0,0,0,0,0};
 
     //运行时间未到 返回
@@ -23,6 +24,7 @@ void app_dht11Task()
     switch(dht11_tm.step)
     {
         case DHT11_STEP_START:
+            memset((void *)&dht11Res,0,sizeof(dht11Res));
             dht11_bsp.gpio_init();
             DHT11_POWER_ON;                 //上电
                                             //上电稳定1秒,电压越低，需要稳定的时间越长
@@ -45,7 +47,16 @@ void app_dht11Task()
             {
                 DBG_PRT("dht11 read  ok!:%d\n",dht11Res.readCnt + 1);
                 //协议中要求传输的数据为整数，除以1000为最终结果，如24.3度，按24300传输
-                dht11Res.dht11_temp_sum += readData.temp_H * 1000 + readData.temp_L * 100;
+                //负数
+                if(readData.temp_H & 0x80)
+                {
+                    dht11Res.dht11_temp_sum += (-1) * ((readData.temp_H & (0x7f))* 1000 + readData.temp_L * 100);
+                }
+                else
+                {
+                    dht11Res.dht11_temp_sum += readData.temp_H * 1000 + readData.temp_L * 100;
+                }
+                
                 dht11Res.dht11_wet_sum += readData.wet_H * 1000 + readData.wet_L * 100;
 
                 if(++dht11Res.readCnt >= DHT11_AVERAGE_CNT)

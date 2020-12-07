@@ -1,6 +1,8 @@
 #include "gprs_app.h"
 #include "gprs_bsp.h"
 #include "usart.h"
+#include "dht11_app.h"
+#include "sgp30_app.h"
 #include <stdio.h>
 
 #define GPRS_NO_HOPEACK2    0
@@ -168,19 +170,23 @@ void gprs_task()
             }
             break;
         case GPRS_STEP_TRANS:
-            snprintf(cmd,128,"AT+TCPTRANS=%s,%d\r",SERVER_IP,SERVER_PORT);
-            res = gprs_ATcmdTx(cmd,"OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,5000,3);  
-            if(res == TRUE)
+            if(dht11_tm.step == DHT11_STEP_FINISH && sgp30_tm.step == SGP30_STEP_FINISH)
             {
-                DBG_PRT("gprs %s OK!\n",cmd);
-                gprs_tm.step++;
+                snprintf(cmd,128,"AT+TCPTRANS=%s,%d\r",SERVER_IP,SERVER_PORT);
+                res = gprs_ATcmdTx(cmd,"OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,5000,3);  
+                if(res == TRUE)
+                {
+                    DBG_PRT("gprs %s OK!\n",cmd);
+                    gprs_tm.step++;
+                }
+                else
+                {
+                    DBG_PRT("gprs %s ERR!\n",cmd);
+                    gprs_tm.errCnt++;
+                    gprs_tm.step = GPRS_STEP_RESET;
+                }
             }
-            else
-            {
-                DBG_PRT("gprs %s ERR!\n",cmd);
-                gprs_tm.errCnt++;
-                gprs_tm.step = GPRS_STEP_RESET;
-            }
+            
             break;
         case GPRS_STEP_IN_TRANS:
             break;

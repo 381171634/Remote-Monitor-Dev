@@ -4,7 +4,7 @@
 #include "stm32f1xx_hal.h"
 #include "common.h"
 
-#define DHT11_AVERAGE_CNT   3
+#define DHT11_AVERAGE_CNT   5
 
 typedef enum{
     DHT11_STEP_START = 0,
@@ -15,10 +15,10 @@ typedef enum{
 
 typedef struct{
     uint32_t dht11_wet_sum;
-    uint32_t dht11_temp_sum;
+    int      dht11_temp_sum;
     uint16_t readCnt;
     uint16_t dht11_wet_avg;
-    uint16_t dht11_temp_avg;
+    int      dht11_temp_avg;
 }dht11ResTypedef;
 
 typedef struct{
@@ -31,5 +31,6 @@ typedef struct{
 
 void app_dht11Task();
 extern taskManageTypedef dht11_tm;
+extern dht11ResTypedef dht11Res;
 
 #endif
