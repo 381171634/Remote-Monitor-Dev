@@ -8,7 +8,7 @@
 #if (ENABLE_DBG == 1)
 #define DBG_PRT(fmt...)   \
     do {\
-        printf("[%s]-%d: ", __FUNCTION__, __LINE__);\
+        printf("[Tick:%d][%s]-%d: ",HAL_GetTick(), __FUNCTION__, __LINE__);\
         printf(fmt);\
     }while(0)
 #else

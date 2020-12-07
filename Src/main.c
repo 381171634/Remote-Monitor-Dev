@@ -116,7 +116,7 @@ int main(void)
 	{
 		dht11_task();
 		sgp30_task();
-		//gprs_task();
+		gprs_task();
 
 		/* USER CODE END WHILE */
 

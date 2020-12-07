@@ -128,18 +128,22 @@ void gprs_task()
             }
             break;
         case GPRS_STEP_CPIN:
-            res = gprs_ATcmdTx("AT+CPIN?\r","OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,1000,10);
-            if(res == TRUE)
+            if(dht11_tm.step == DHT11_STEP_FINISH)
             {
-                DBG_PRT("gprs AT+CPIN OK!\n");
-                gprs_tm.step++;
+                res = gprs_ATcmdTx("AT+CPIN?\r","OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,1000,10);
+                if(res == TRUE)
+                {
+                    DBG_PRT("gprs AT+CPIN OK!\n");
+                    gprs_tm.step++;
+                }
+                else
+                {
+                    DBG_PRT("gprs AT+CPIN ERR!\n");
+                    gprs_tm.errCnt++;
+                    gprs_tm.step = GPRS_STEP_RESET;
+                }
             }
-            else
-            {
-                DBG_PRT("gprs AT+CPIN ERR!\n");
-                gprs_tm.errCnt++;
-                gprs_tm.step = GPRS_STEP_RESET;
-            }
+            
             break;
         case GPRS_STEP_CGREG:
             res = gprs_ATcmdTx("AT+CGREG?\r","CGREG: 0,5","CGREG: 0,1",GPRS_NO_BACK,2000,10);  
