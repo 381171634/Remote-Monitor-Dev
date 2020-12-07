@@ -7,7 +7,7 @@ dht11ResTypedef dht11Res;
 
 static uint8_t app_dht11Read(dht11DataTypedef *pSrc);
 
-void app_dht11Task()
+void dht11_task()
 {
     int i;
     uint8_t res;

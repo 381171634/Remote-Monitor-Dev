@@ -2,6 +2,7 @@
 #include "sgp30_bsp.h"
 #include "main.h"
 #include "dht11_app.h"
+#include "math.h"
 
 taskManageTypedef sgp30_tm = {0,0,0};
 sgp30ResTypedef sgp30Res;
@@ -75,9 +76,44 @@ void sgp30_task()
 				}
 			}
 			break;
+		case SGP30_STEP_WAIT_INIT:
+			for(i = 0;i < 3; i++)
+			{
+				cmd = 0x0820;
+				SGP30_Write((uint8_t *)&cmd,2);
+				if(TRUE == SGP30_Read(&sgp30_dat))
+				{
+					break;
+				}
+			}
+
+			if(i < 3)
+			{
+				CO2Data = (sgp30_dat & 0xffff0000) >> 16; //取出CO2浓度值
+				TVOCData = sgp30_dat & 0x0000ffff;		  //取出TVOC值
+				if(CO2Data != 400 || TVOCData !=0)
+				{
+					sgp30_tm.step++;
+					DBG_PRT("sgp30 init ok!\n");
+				}
+				else
+				{
+					DBG_PRT("sgp30 is testing...!\n");
+				}
+				sgp30_tm.execuTick = SGP30_GET_TICK() + 1000;
+			}
+			else
+			{
+				sgp30_tm.errCnt++;
+				DBG_PRT("sgp30 read ERR!:%d\n");
+			}
+			
+			break;
 		case SGP30_STEP_READ:
 			for(i = 0;i < 3; i++)
 			{
+				cmd = 0x0820;
+				SGP30_Write((uint8_t *)&cmd,2);
 				if(TRUE == SGP30_Read(&sgp30_dat))
 				{
 					break;
@@ -95,7 +131,7 @@ void sgp30_task()
 				if(++sgp30Res.readCnt >= SGP30_AVERAGE_CNT)
 				{
 					sgp30Res.tvoc_arg = sgp30Res.tvoc_sum / SGP30_AVERAGE_CNT;
-					sgp30Res.co2_avg = sgp30Res.tvoc_sum / SGP30_AVERAGE_CNT;
+					sgp30Res.co2_avg = sgp30Res.co2_sum / SGP30_AVERAGE_CNT;
 					sgp30_tm.step++;
 					DBG_PRT("sgp30 read finish!tvoc average:%d co2 average:%d\n",sgp30Res.tvoc_arg,sgp30Res.co2_avg);
 				}
@@ -128,43 +164,3 @@ void sgp30_task()
 	}
 }
 
-void sgp30test()
-{
-	uint8_t res;
-	uint16_t cmd;
-	uint32_t CO2Data,TVOCData;//定义CO2浓度变量与TVOC浓度变量
-	uint32_t sgp30_dat;
-
-	SGP30_Init(); //初始化SGP30
-	SGP30_DELAY_MS(100);
-	cmd = 0x0820;
-	SGP30_Write((uint8_t *)&cmd,2);
-	res = SGP30_Read(&sgp30_dat); //读取SGP30的值
-	CO2Data = (sgp30_dat & 0xffff0000) >> 16;
-	TVOCData = sgp30_dat & 0x0000ffff;
-	//SGP30模块开机需要一定时间初始化，在初始化阶段读取的CO2浓度为400ppm，TVOC为0ppd且恒定不变，因此上电后每隔一段时间读取一次
-	//SGP30模块的值，如果CO2浓度为400ppm，TVOC为0ppd，发送“正在检测中...”，直到SGP30模块初始化完成。
-	//初始化完成后刚开始读出数据会波动比较大，属于正常现象，一段时间后会逐渐趋于稳定。
-	//气体类传感器比较容易受环境影响，测量数据出现波动是正常的，可自行添加滤波函数。
-	// while (CO2Data == 400 && TVOCData == 0)
-	// {
-	// 	SGP30_Write(0x20, 0x08);
-	// 	SGP30_Read(&sgp30_dat);				  //读取SGP30的值
-	// 	CO2Data = (sgp30_dat & 0xffff0000) >> 16; //取出CO2浓度值
-	// 	TVOCData = sgp30_dat & 0x0000ffff;		  //取出TVOC值
-	// 	DBG_PRT("test ing...\r\n");
-	// 	SGP30_DELAY_MS(500);
-	// }
-	SGP30_DELAY_MS(15000);
-	while (1)
-	{
-		cmd = 0x0820;
-		SGP30_Write((uint8_t *)&cmd,2);
-		SGP30_Read(&sgp30_dat);				  //读取SGP30的值
-		CO2Data = (sgp30_dat & 0xffff0000) >> 16; //取出CO2浓度值
-		TVOCData = sgp30_dat & 0x0000ffff;		  //取出TVOC值
-		DBG_PRT("CO2:%dppm\r\nTVOC:%dppd\r\n", CO2Data, TVOCData);
-		SGP30_DELAY_MS(500);
-
-	}
-}

@@ -114,10 +114,9 @@ int main(void)
 
 	while (1)
 	{
-		sgp30test();
-		app_dht11Task();
-
-		gprs_task();
+		dht11_task();
+		sgp30_task();
+		//gprs_task();
 
 		/* USER CODE END WHILE */
 
