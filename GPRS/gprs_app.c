@@ -168,7 +168,7 @@ void gprs_task()
                     if(res == TRUE)
                     {
                         DBG_PRT("gprs PPP OK!\n");
-                        gprs_tm.step++;
+                        gprs_tm.execuTick = gprs_bsp.getTickMs() + 3000;
                     }
                     else
                     {
@@ -187,7 +187,7 @@ void gprs_task()
             }
             break;
         case GPRS_STEP_UPDATE_TIME:
-            res = gprs_ATcmdTx("AT+UPDATETIME=1,time.windows.com,10\r","Update To",GPRS_NO_HOPEACK2,atbufBack,12000,3);  
+            res = gprs_ATcmdTx("AT+UPDATETIME=1,time.windows.com,10\r","Update To",GPRS_NO_HOPEACK2,atbufBack,11000,3);  
             if(res == TRUE)
             {
                 DBG_PRT("gprs AT+UPDATETIME OK!\n");
@@ -223,6 +223,7 @@ void gprs_task()
                 if(res == TRUE)
                 {
                     DBG_PRT("gprs %s OK!\n",cmd);
+                    gprs_tm.execuTick = gprs_bsp.getTickMs() + 2000;
                     gprs_tm.step++;
                 }
                 else

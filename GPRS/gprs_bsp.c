@@ -11,6 +11,10 @@ void USART1_IRQHandler()
     if(isrflags & (UART_FLAG_RXNE | UART_FLAG_IDLE) )
     {
         gprsRB.pRecvBuf[(gprsRB.pW++) % GPRS_RECV_BUF_LEN] = huart1.Instance->DR;
+        if(isrflags & UART_FLAG_IDLE)
+        {
+            gprsRB.uart_idle_flag = 1;
+        }
     }
     else
     {
@@ -73,7 +77,7 @@ static uint16_t gprs_bsp_read(uint8_t *pDes,uint16_t len,uint16_t timeout)
     uint32_t endTick = gprs_bsp_getTick() + timeout;
     while(1)
     {
-        if(gprsRB.uart_idle_flag = 1)
+        if(gprsRB.uart_idle_flag == 1)
         {
             gprsRB.uart_idle_flag = 0;
             while((gprsRB.pW - gprsRB.pR) && retval < len)

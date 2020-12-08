@@ -143,7 +143,7 @@ void gprs_getTime(uint8_t *timeStr)
 			}
 		}
 
-		date.Year = atoi(p);
+		date.Year = atoi(p) - 2000;
 		p += 5;
 		date.Month = atoi(p);
 		p += 3;

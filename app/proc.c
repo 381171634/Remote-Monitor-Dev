@@ -137,8 +137,8 @@ static uint8_t proc_publish(uint16_t timeout)
     len_t += 4;
     memcpy(tranBuf + len_t,DEV_ID,16);
     len_t += 16;
-    memcpy(tranBuf + len_t,(void *)&data.tempture,sizeof(SampleDataTypedef) - 4);
-    len_t += sizeof(SampleDataTypedef) - 4;
+    memcpy(tranBuf + len_t,(void *)&data,sizeof(SampleDataTypedef));
+    len_t += sizeof(SampleDataTypedef);
     
     len_t = proc_makeAproc(tranBuf,len_t - 4);
     
