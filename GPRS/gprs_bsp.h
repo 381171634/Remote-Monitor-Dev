@@ -20,6 +20,7 @@ typedef struct{
     void (*dly_ms)(uint16_t ms);
     uint32_t (*getTickMs)(void);
     uint8_t (*write)(uint8_t *pSrc,uint16_t len);
+    uint16_t (*read)(uint8_t *pDes,uint16_t len,uint16_t timeout);
 }gprs_bspTypedef;
 
 typedef struct{

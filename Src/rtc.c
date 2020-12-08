@@ -39,6 +39,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "rtc.h"
+#include "common.h"
+#include <string.h>
 
 /* USER CODE BEGIN 0 */
 
@@ -50,55 +52,114 @@ RTC_HandleTypeDef hrtc;
 void MX_RTC_Init(void)
 {
 
-    /**Initialize RTC Only 
+	/**Initialize RTC Only 
     */
-  hrtc.Instance = RTC;
-  hrtc.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
-  hrtc.Init.OutPut = RTC_OUTPUTSOURCE_ALARM;
-  if (HAL_RTC_Init(&hrtc) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
+	hrtc.Instance = RTC;
+	hrtc.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
+	hrtc.Init.OutPut = RTC_OUTPUTSOURCE_ALARM;
+	if (HAL_RTC_Init(&hrtc) != HAL_OK)
+	{
+		_Error_Handler(__FILE__, __LINE__);
+	}
 }
 
-void HAL_RTC_MspInit(RTC_HandleTypeDef* rtcHandle)
+void HAL_RTC_MspInit(RTC_HandleTypeDef *rtcHandle)
 {
 
-  if(rtcHandle->Instance==RTC)
-  {
-  /* USER CODE BEGIN RTC_MspInit 0 */
+	if (rtcHandle->Instance == RTC)
+	{
+		/* USER CODE BEGIN RTC_MspInit 0 */
 
-  /* USER CODE END RTC_MspInit 0 */
-    HAL_PWR_EnableBkUpAccess();
-    /* Enable BKP CLK enable for backup registers */
-    __HAL_RCC_BKP_CLK_ENABLE();
-    /* RTC clock enable */
-    __HAL_RCC_RTC_ENABLE();
-  /* USER CODE BEGIN RTC_MspInit 1 */
+		/* USER CODE END RTC_MspInit 0 */
+		HAL_PWR_EnableBkUpAccess();
+		/* Enable BKP CLK enable for backup registers */
+		__HAL_RCC_BKP_CLK_ENABLE();
+		/* RTC clock enable */
+		__HAL_RCC_RTC_ENABLE();
+		/* USER CODE BEGIN RTC_MspInit 1 */
 
-  /* USER CODE END RTC_MspInit 1 */
-  }
+		/* USER CODE END RTC_MspInit 1 */
+	}
 }
 
-void HAL_RTC_MspDeInit(RTC_HandleTypeDef* rtcHandle)
+void HAL_RTC_MspDeInit(RTC_HandleTypeDef *rtcHandle)
 {
 
-  if(rtcHandle->Instance==RTC)
-  {
-  /* USER CODE BEGIN RTC_MspDeInit 0 */
+	if (rtcHandle->Instance == RTC)
+	{
+		/* USER CODE BEGIN RTC_MspDeInit 0 */
 
-  /* USER CODE END RTC_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_RTC_DISABLE();
-  /* USER CODE BEGIN RTC_MspDeInit 1 */
+		/* USER CODE END RTC_MspDeInit 0 */
+		/* Peripheral clock disable */
+		__HAL_RCC_RTC_DISABLE();
+		/* USER CODE BEGIN RTC_MspDeInit 1 */
 
-  /* USER CODE END RTC_MspDeInit 1 */
-  }
-} 
+		/* USER CODE END RTC_MspDeInit 1 */
+	}
+}
 
 /* USER CODE BEGIN 1 */
+uint32_t getUnixTick()
+{
+	uint32_t retval;
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
+	struct tm time_t; 
+	memset((void *)&time_t,0,sizeof(time_t));
 
+	HAL_RTC_GetTime(&hrtc,&time,RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc,&date,RTC_FORMAT_BIN);
+	
+
+	time_t.tm_sec = time.Seconds;
+	time_t.tm_min = time.Minutes;
+	time_t.tm_hour= time.Hours;
+	time_t.tm_year= date.Year + 100;
+	time_t.tm_mon = date.Month - 1;
+	time_t.tm_mday= date.Date;
+
+	retval = my_mktime(&time_t);
+
+	return retval;
+}
+
+void gprs_getTime(uint8_t *timeStr)
+{
+    RTC_DateTypeDef date;
+    RTC_TimeTypeDef time;
+	uint8_t *p,*p1;
+	uint16_t i;
+    //2014-04-12,15:17:48
+	p = strstr(timeStr,"Update To ");
+	if(p != 0)
+	{
+		p += strlen("Update To ");
+		p1 = p;
+		while(*p1++ != 0)
+		{
+			if(*p1 < '0' || *p1 > '9')
+			{
+				*p1 = 0;
+			}
+		}
+
+		date.Year = atoi(p);
+		p += 5;
+		date.Month = atoi(p);
+		p += 3;
+		date.Date = atoi(p);
+		p += 3;
+		time.Hours = atoi(p);
+		p += 3;
+		time.Minutes =atoi(p);
+		p += 3;
+		time.Seconds = atoi(p);
+
+		HAL_RTC_SetDate(&hrtc,&date,RTC_FORMAT_BIN);
+		HAL_RTC_SetTime(&hrtc,&time,RTC_FORMAT_BIN);
+	}
+	
+}
 /* USER CODE END 1 */
 
 /**

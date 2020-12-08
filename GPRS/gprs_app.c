@@ -3,6 +3,8 @@
 #include "usart.h"
 #include "dht11_app.h"
 #include "sgp30_app.h"
+#include "proc.h"
+#include "rtc.h"
 #include <stdio.h>
 
 #define GPRS_NO_HOPEACK2    0
@@ -29,14 +31,7 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
         {
             while(1)
             {
-                if(gprsRB.uart_idle_flag = 1)
-                {
-                    gprsRB.uart_idle_flag = 0;
-                    while(gprsRB.pW - gprsRB.pR)
-                    {
-                        atBuf[(atBufpW++) % 128] = gprsRB.pRecvBuf[(gprsRB.pR++) % GPRS_RECV_BUF_LEN];
-                    }
-                }
+                atBufpW += gprs_bsp.read(atBuf + atBufpW,128 - atBufpW,100);
                 
                 if(hopeAck1 == 0)
                 {
@@ -64,10 +59,7 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
                     res =FALSE;
                     break;
                 }
-                else
-                {
-                    gprs_bsp.dly_ms(100);
-                }
+
             }
         }
 
@@ -83,6 +75,7 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
 	
 	return res;
 }
+
 
 void gprs_task()
 {
@@ -159,6 +152,55 @@ void gprs_task()
                 gprs_tm.step = GPRS_STEP_RESET;
             }
             break;
+        case GPRS_STEP_PPP:
+            res = gprs_ATcmdTx("AT+XIIC?\r","+XIIC:    1","+XIIC:    0",atbufBack,1000,10);  
+            if(res == TRUE)
+            {
+                if(strstr(atbufBack,"+XIIC:    1") != 0)
+                {
+                    DBG_PRT("gprs PPP OK!\n");
+                    gprs_tm.step++;
+                }
+                else
+                {
+                    DBG_PRT("gprs PPP need to be connected!\n");
+                    res = gprs_ATcmdTx("AT+XIIC=1\r","OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,1000,10);
+                    if(res == TRUE)
+                    {
+                        DBG_PRT("gprs PPP OK!\n");
+                        gprs_tm.step++;
+                    }
+                    else
+                    {
+                        DBG_PRT("gprs PPP ERR!\n");
+                        gprs_tm.errCnt++;
+                        gprs_tm.step = GPRS_STEP_RESET;
+                    }
+                }
+                
+            }
+            else
+            {
+                DBG_PRT("gprs PPP ERR!\n");
+                gprs_tm.errCnt++;
+                gprs_tm.step = GPRS_STEP_RESET;
+            }
+            break;
+        case GPRS_STEP_UPDATE_TIME:
+            res = gprs_ATcmdTx("AT+UPDATETIME=1,time.windows.com,10\r","Update To",GPRS_NO_HOPEACK2,atbufBack,12000,3);  
+            if(res == TRUE)
+            {
+                DBG_PRT("gprs AT+UPDATETIME OK!\n");
+                gprs_getTime(atbufBack);
+                gprs_tm.step++;
+            }
+            else
+            {
+                DBG_PRT("gprs AT+UPDATETIME ERR!\n");
+                gprs_tm.errCnt++;
+                gprs_tm.step = GPRS_STEP_RESET;
+            }
+            break;
         case GPRS_STEP_MYNETACT:
             res = gprs_ATcmdTx("AT$MYNETACT=0,1\r","OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,10000,3);  
             if(res == TRUE)
@@ -193,8 +235,18 @@ void gprs_task()
             
             break;
         case GPRS_STEP_IN_TRANS:
+            if(proc_tm.step == PROC_STEP_FINISH)
+            {
+                DBG_PRT("transport finish!\n");
+                gprs_tm.step++;
+            }
+            proc_task();
             break;
-
+        case GPRS_STEP_POWER_OFF:
+            GPRS_POWER_OFF;
+            DBG_PRT("gprs power off!\n");
+            gprs_tm.step++;
+            break;
         default:
             break;
 

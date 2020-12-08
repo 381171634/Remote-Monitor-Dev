@@ -1196,6 +1196,12 @@
         <group>
             <name>User</name>
             <group>
+                <name>APP</name>
+                <file>
+                    <name>$PROJ_DIR$\..\app\proc.c</name>
+                </file>
+            </group>
+            <group>
                 <name>dht11</name>
                 <file>
                     <name>$PROJ_DIR$\..\DHT11\dht11_app.c</name>
@@ -1230,6 +1236,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\main.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\my_mktime.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\rtc.c</name>

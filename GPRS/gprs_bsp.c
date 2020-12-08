@@ -2,7 +2,7 @@
 #include "usart.h"
 #include "stm32f1xx_it.h"
 
-gprs_RBTypedef gprsRB = {{0},0,0,0};
+gprs_RBTypedef gprsRB;
 
 void USART1_IRQHandler()
 {
@@ -35,6 +35,8 @@ static void gprs_bsp_init()
 
     __HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
     __HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);
+
+    memset((void *)&gprsRB,0,sizeof(gprsRB));
 }
 
 static void gprs_bsp_dly_ms(uint16_t ms)
@@ -50,6 +52,11 @@ static void gprs_bsp_reset(void)
 
 }
 
+static uint32_t gprs_bsp_getTick(void)
+{
+    return HAL_GetTick();
+}
+
 static uint8_t gprs_bsp_write(uint8_t *pSrc,uint16_t len)
 {
     if(HAL_UART_Transmit(&huart1,pSrc,len,100) == HAL_OK)
@@ -60,15 +67,36 @@ static uint8_t gprs_bsp_write(uint8_t *pSrc,uint16_t len)
     return FALSE;
 }
 
-static uint32_t gprs_bsp_getTick(void)
+static uint16_t gprs_bsp_read(uint8_t *pDes,uint16_t len,uint16_t timeout)
 {
-    return HAL_GetTick();
+    uint16_t retval = 0;
+    uint32_t endTick = gprs_bsp_getTick() + timeout;
+    while(1)
+    {
+        if(gprsRB.uart_idle_flag = 1)
+        {
+            gprsRB.uart_idle_flag = 0;
+            while((gprsRB.pW - gprsRB.pR) && retval < len)
+            {
+                pDes[retval++] = gprsRB.pRecvBuf[(gprsRB.pR++) % GPRS_RECV_BUF_LEN];
+            }
+        }
+
+        if(gprs_bsp_getTick() - endTick < 0xffffffff/2 || retval >= len)
+        {
+            break;
+        }
+    }
+
+    return retval;
 }
+
 
 gprs_bspTypedef gprs_bsp = {
     .init       =   gprs_bsp_init,
     .reset      =   gprs_bsp_reset,
     .dly_ms     =   gprs_bsp_dly_ms,
     .getTickMs  =   gprs_bsp_getTick,
-    .write      =   gprs_bsp_write
+    .write      =   gprs_bsp_write,
+    .read       =   gprs_bsp_read
 };

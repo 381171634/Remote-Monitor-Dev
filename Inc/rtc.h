@@ -46,9 +46,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 #include "main.h"
+#include <time.h>
 
 /* USER CODE BEGIN Includes */
-
+extern uint32_t my_mktime(struct tm* p);
 /* USER CODE END Includes */
 
 extern RTC_HandleTypeDef hrtc;
@@ -62,7 +63,8 @@ extern void _Error_Handler(char *, int);
 void MX_RTC_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+uint32_t getUnixTick();
+void gprs_getTime(uint8_t *timeStr);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
