@@ -5,6 +5,8 @@
         "common.h": "c",
         "stm32f1xx_hal.h": "c",
         "stm32f1xx_hal_conf.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "lowpower.h": "c",
+        "stm32f1xx_it.h": "c"
     }
 }

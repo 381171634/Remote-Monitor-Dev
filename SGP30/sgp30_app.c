@@ -32,6 +32,7 @@ void sgp30_task()
 	uint16_t cmd; 
 	uint32_t CO2Data,TVOCData;//定义CO2浓度变量与TVOC浓度变量
 	uint32_t sgp30_dat;
+	static int test_cnt = 0;
 
     //运行时间未到 返回
     if(SGP30_GET_TICK() - sgp30_tm.execuTick > 0xffffffff / 2
@@ -43,23 +44,33 @@ void sgp30_task()
 	switch(sgp30_tm.step)
 	{
 		case SGP30_STEP_START:
+			test_cnt = 0;
 			memset((void *)&sgp30Res,0,sizeof(sgp30Res));
-			SGP30_Init();
-			SGP30_DELAY_MS(100);
-			cmd = 0x0820;
-			SGP30_Write((uint8_t *)&cmd,2);
-			res = SGP30_Read(&sgp30_dat);
+			res = SGP30_Init();
 			if(res == TRUE)
 			{
-				DBG_PRT("sgp30 start OK!\n");
-				sgp30_tm.execuTick = SGP30_GET_TICK() + 15000;//等15s稳定
-				sgp30_tm.step++;
+				SGP30_DELAY_MS(100);
+				cmd = 0x0820;
+				SGP30_Write((uint8_t *)&cmd,2);
+				res = SGP30_Read(&sgp30_dat);
+				if(res == TRUE)
+				{
+					DBG_PRT("sgp30 start OK!\n");
+					sgp30_tm.execuTick = SGP30_GET_TICK() + 15000;//等15s稳定
+					sgp30_tm.step++;
+				}
+				else
+				{
+					sgp30_tm.errCnt++;
+					DBG_PRT("sgp30 start ERR!\n");
+				}
 			}
 			else
 			{
+				DBG_PRT("sgp30 init err!\n");
 				sgp30_tm.errCnt++;
-				DBG_PRT("sgp30 start ERR!\n");
 			}
+			
 			break;
 		case SGP30_STEP_FIX:
 			if(dht11_tm.step == DHT11_STEP_FINISH)
@@ -99,6 +110,10 @@ void sgp30_task()
 				else
 				{
 					DBG_PRT("sgp30 is testing...!\n");
+					if(++test_cnt >= 20)
+					{
+						sgp30_tm.step = SGP30_STEP_START;
+					}
 				}
 				sgp30_tm.execuTick = SGP30_GET_TICK() + 1000;
 			}

@@ -195,12 +195,15 @@ uint16_t SGP30_IIC_Read_Byte(uint8_t ack)
 }
 
 //初始化IIC接口
-void SGP30_Init(void)
+uint8_t SGP30_Init(void)
 {
 	uint16_t cmd = 0x0320;
+	int i = 0;
 	SGP30_GPIO_Init();
 	SGP30_DELAY_MS(5);
-	SGP30_Write((uint8_t *)&cmd,2);
+	return SGP30_Write((uint8_t *)&cmd,2);
+	
+	
 	//	SGP30_ad_write(0x20,0x61);
 	//	SGP30_ad_write(0x01,0x00);
 }

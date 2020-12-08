@@ -128,6 +128,7 @@ void gprs_task()
                 {
                     DBG_PRT("gprs AT+CPIN OK!\n");
                     gprs_tm.step++;
+                    gprs_tm.execuTick = gprs_bsp.getTickMs() + 10000;
                 }
                 else
                 {
@@ -139,7 +140,7 @@ void gprs_task()
             
             break;
         case GPRS_STEP_CGREG:
-            res = gprs_ATcmdTx("AT+CGREG?\r","CGREG: 0,5","CGREG: 0,1",GPRS_NO_BACK,2000,10);  
+            res = gprs_ATcmdTx("AT+CGREG?\r","CGREG: 0,5","CGREG: 0,1",GPRS_NO_BACK,2000,5);  
             if(res == TRUE)
             {
                 DBG_PRT("gprs AT+CGREG? OK!\n");

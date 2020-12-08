@@ -36,7 +36,7 @@
 #include "stm32f1xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+extern RTC_HandleTypeDef hrtc;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -206,6 +206,16 @@ void SysTick_Handler(void)
 // }
 
 /* USER CODE BEGIN 1 */
+void RTC_Alarm_IRQHandler(void)
+{
+  /* USER CODE BEGIN RTC_Alarm_IRQn 0 */
+  //alarm_flag = 1;
+  /* USER CODE END RTC_Alarm_IRQn 0 */
+  HAL_RTC_AlarmIRQHandler(&hrtc);
+  
+  /* USER CODE BEGIN RTC_Alarm_IRQn 1 */
 
+  /* USER CODE END RTC_Alarm_IRQn 1 */
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

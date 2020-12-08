@@ -36,7 +36,7 @@ void SGP30_IIC_Ack(void);					//IIC����ACK�ź�
 void SGP30_IIC_NAck(void);				//IIC������ACK�ź�
 void SGP30_IIC_Write_One_Byte(uint8_t daddr,uint8_t addr,uint8_t data);
 uint8_t SGP30_IIC_Read_One_Byte(uint8_t daddr,uint8_t addr);	
-void SGP30_Init(void);				  
+uint8_t SGP30_Init(void);				  
 uint8_t SGP30_Write(uint8_t *pSrc,uint16_t len);
 uint8_t SGP30_Read(uint32_t *pDes);
 

@@ -1198,6 +1198,9 @@
             <group>
                 <name>APP</name>
                 <file>
+                    <name>$PROJ_DIR$\..\app\lowPower.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\app\proc.c</name>
                 </file>
             </group>

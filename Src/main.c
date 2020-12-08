@@ -44,6 +44,7 @@
 #include "usart.h"
 #include "gpio.h"
 
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -68,6 +69,7 @@ static void MX_NVIC_Init(void);
 #include "dht11_app.h"
 #include "gprs_app.h"
 #include "sgp30_app.h"
+#include "lowPower.h"
 /* USER CODE END 0 */
 
 /**
@@ -117,6 +119,11 @@ int main(void)
 		dht11_task();
 		sgp30_task();
 		gprs_task();
+
+		if(gprs_tm.step == GPRS_STEP_FINISH)
+		{
+			enter_lowPwr();
+		}
 
 		/* USER CODE END WHILE */
 
@@ -193,6 +200,12 @@ static void MX_NVIC_Init(void)
 	/* USART1_IRQn interrupt configuration */
 	HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(USART1_IRQn);
+
+	// HAL_NVIC_SetPriority(RTC_IRQn, 0, 0);
+  	// HAL_NVIC_EnableIRQ(RTC_IRQn);
+
+	HAL_NVIC_SetPriority(RTC_Alarm_IRQn, 0, 0);
+  	HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
