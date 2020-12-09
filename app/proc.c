@@ -12,6 +12,7 @@
 
 #include "proc.h"
 #include "rtc.h"
+#include "adc.h"
 #include "dht11_app.h"
 #include "sgp30_app.h"
 
@@ -129,7 +130,7 @@ static uint8_t proc_publish(uint16_t timeout)
     data.humidity = dht11Res.dht11_wet_avg;
     data.HCHO     = sgp30Res.tvoc_arg;
     data.CO2      = sgp30Res.co2_avg;
-    data.cellVoltage = 0;//wait for cpl
+    data.cellVoltage = CellVoltage;
 
     memset(tranBuf,0,sizeof(tranBuf));
     tranBuf[len_t++] = 0x02;

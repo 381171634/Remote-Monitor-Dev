@@ -54,7 +54,7 @@
 extern ADC_HandleTypeDef hadc1;
 
 /* USER CODE BEGIN Private defines */
-
+extern uint32_t CellVoltage;
 /* USER CODE END Private defines */
 
 extern void _Error_Handler(char *, int);
