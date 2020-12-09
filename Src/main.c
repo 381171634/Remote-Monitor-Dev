@@ -120,7 +120,7 @@ int main(void)
 		sgp30_task();
 		gprs_task();
 
-		if(gprs_tm.step == GPRS_STEP_FINISH)
+		if(gprs_tm.step == GPRS_STEP_FINISH || HAL_GetTick() >= 120000)
 		{
 			enter_lowPwr();
 		}

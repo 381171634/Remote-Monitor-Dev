@@ -52,6 +52,7 @@ void sgp30_task()
 				SGP30_DELAY_MS(100);
 				cmd = 0x0820;
 				SGP30_Write((uint8_t *)&cmd,2);
+				SGP30_DELAY_MS(20);
 				res = SGP30_Read(&sgp30_dat);
 				if(res == TRUE)
 				{
@@ -92,6 +93,7 @@ void sgp30_task()
 			{
 				cmd = 0x0820;
 				SGP30_Write((uint8_t *)&cmd,2);
+				SGP30_DELAY_MS(20);
 				if(TRUE == SGP30_Read(&sgp30_dat))
 				{
 					break;
@@ -129,6 +131,7 @@ void sgp30_task()
 			{
 				cmd = 0x0820;
 				SGP30_Write((uint8_t *)&cmd,2);
+				SGP30_DELAY_MS(20);
 				if(TRUE == SGP30_Read(&sgp30_dat))
 				{
 					break;

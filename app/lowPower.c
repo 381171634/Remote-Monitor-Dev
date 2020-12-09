@@ -15,23 +15,13 @@ void enter_lowPwr()
     memset((void *)&alarm, 0, sizeof(alarm));
     //除了控制GPRS模块的DCDC使能，其余引脚全配置成浮空输入
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_All & ~(GPIO_PIN_13 | GPIO_PIN_14));
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All & ~(GPIO_PIN_15));
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All & ~(DCDC_ENABLE_Pin));
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_All);
 
     HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
-    //time.Seconds += 5;
-    // if (time.Seconds > 59)
-    // {
-    //     time.Minutes += 1;
-    //     time.Seconds = time.Seconds % 60;
-    //     if (time.Minutes > 59)
-    //     {
-    //         time.Hours += 1;
-    //         time.Minutes = 0;
-    //         if (time.Hours > 23)
-    //             time.Hours = 0;
-    //     }
-    // }
+
+    DBG_PRT("time->%02d:%02d:%02d\n",time.Hours,time.Minutes,time.Seconds);
+    
     time.Seconds = 0;
     time.Minutes += 5;
     if(time.Minutes > 59)
@@ -52,6 +42,4 @@ void enter_lowPwr()
     SysTick->VAL = 0x00;//清空val,清空定时器
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFI);
 
-    //SET_BIT(PWR->CR, PWR_CR_CWUF);
-    //HAL_PWR_EnterSTANDBYMode();
 }
