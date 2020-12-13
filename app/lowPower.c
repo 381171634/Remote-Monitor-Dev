@@ -22,15 +22,30 @@ void enter_lowPwr()
 
     DBG_PRT("time->%02d:%02d:%02d\n",time.Hours,time.Minutes,time.Seconds);
     
-    time.Seconds = 0;
-    time.Minutes += 5;
-    if(time.Minutes > 59)
+    // time.Seconds = 0;
+    // time.Minutes += 5;
+    // if(time.Minutes > 59)
+    // {
+    //     time.Hours += 1;
+    //     time.Minutes %= 60;
+    //     if (time.Hours > 23)
+    //         time.Hours = 0;
+    // }
+
+    time.Seconds += 5;
+    if(time.Seconds > 59)
     {
-        time.Hours += 1;
-        time.Minutes = 0;
-        if (time.Hours > 23)
-            time.Hours = 0;
+        time.Seconds %= 60;
+        time.Minutes += 1;
+        if(time.Minutes > 59)
+        {
+            time.Hours += 1;
+            time.Minutes = 0;
+            if (time.Hours > 23)
+                time.Hours = 0;
+        }
     }
+    
 
     alarm.AlarmTime.Hours = time.Hours;
     alarm.AlarmTime.Minutes = time.Minutes;

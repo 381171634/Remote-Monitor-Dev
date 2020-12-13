@@ -57,7 +57,7 @@ void sgp30_task()
 				if(res == TRUE)
 				{
 					DBG_PRT("sgp30 start OK!\n");
-					sgp30_tm.execuTick = SGP30_GET_TICK() + 15000;//等15s稳定
+					sgp30_tm.execuTick = SGP30_GET_TICK() + 10000;//等10s稳定
 					sgp30_tm.step++;
 				}
 				else
@@ -112,7 +112,7 @@ void sgp30_task()
 				else
 				{
 					DBG_PRT("sgp30 is testing...!\n");
-					if(++test_cnt >= 20)
+					if(++test_cnt >= 10)
 					{
 						sgp30_tm.step = SGP30_STEP_START;
 					}

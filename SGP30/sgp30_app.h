@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#define SGP30_AVERAGE_CNT   10
+#define SGP30_AVERAGE_CNT   3
 
 typedef enum{
     SGP30_STEP_START = 0,
