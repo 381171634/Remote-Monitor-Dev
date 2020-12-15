@@ -99,6 +99,10 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef *rtcHandle)
 }
 
 /* USER CODE BEGIN 1 */
+/*============================================================================
+ 由RTC时间转换成Unix时间戳
+ return：Unix时间戳
+ ============================================================================*/
 uint32_t getUnixTick()
 {
 	uint32_t retval;
@@ -123,6 +127,11 @@ uint32_t getUnixTick()
 	return retval;
 }
 
+/*============================================================================
+ 由gprs的同步网络时间的返回字符串，获得Unix时间戳
+ 之后设置RTC时间
+ timeStr：gprs时间字符串
+ ============================================================================*/
 void gprs_getTime(uint8_t *timeStr)
 {
     RTC_DateTypeDef date;

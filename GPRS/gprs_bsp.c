@@ -1,9 +1,23 @@
+/*
+ ============================================================================
+ Name        : gprs_bsp.c
+ Author      : wy
+ Version     :
+ Copyright   : Your copyright notice
+ Description : gprs板级 包含所有gprs的板级基础操作
+ ============================================================================
+ */
 #include "gprs_bsp.h"
 #include "usart.h"
 #include "stm32f1xx_it.h"
 
 gprs_RBTypedef gprsRB;
 
+/*============================================================================
+ gprs对应串口的中断处理函数
+ 来接收中断后将数据放入gprs环形缓存
+ 来空闲中断则置位gprs串口通道的标志
+ ============================================================================*/
 void USART1_IRQHandler()
 {
     uint8_t idle_clr;
@@ -22,6 +36,9 @@ void USART1_IRQHandler()
     }
 }
 
+/*============================================================================
+ 初始化 包括gpio、串口配置等
+ ============================================================================*/
 static void gprs_bsp_init()
 {
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -43,11 +60,17 @@ static void gprs_bsp_init()
     memset((void *)&gprsRB,0,sizeof(gprsRB));
 }
 
+/*============================================================================
+ 延时 毫秒
+ ============================================================================*/
 static void gprs_bsp_dly_ms(uint16_t ms)
 {
     HAL_Delay(ms);
 }
 
+/*============================================================================
+ gprs复位
+ ============================================================================*/
 static void gprs_bsp_reset(void)
 {
     HAL_GPIO_WritePin(GPRS_RST_GPIO_Port,GPRS_RST_Pin,GPIO_PIN_SET);
@@ -56,11 +79,19 @@ static void gprs_bsp_reset(void)
 
 }
 
+/*============================================================================
+ gprs获取时间戳
+ ============================================================================*/
 static uint32_t gprs_bsp_getTick(void)
 {
     return HAL_GetTick();
 }
 
+/*============================================================================
+ 向gprs模块写数据
+ pSrc：源指针
+ len：长度
+ ============================================================================*/
 static uint8_t gprs_bsp_write(uint8_t *pSrc,uint16_t len)
 {
     if(HAL_UART_Transmit(&huart1,pSrc,len,100) == HAL_OK)
@@ -71,6 +102,12 @@ static uint8_t gprs_bsp_write(uint8_t *pSrc,uint16_t len)
     return FALSE;
 }
 
+/*============================================================================
+ 从gprs串口通道中读数据
+ pDes：目标指针
+ len：长度
+ timeout：超时 毫秒
+ ============================================================================*/
 static uint16_t gprs_bsp_read(uint8_t *pDes,uint16_t len,uint16_t timeout)
 {
     uint16_t retval = 0;
@@ -95,7 +132,9 @@ static uint16_t gprs_bsp_read(uint8_t *pDes,uint16_t len,uint16_t timeout)
     return retval;
 }
 
-
+/*============================================================================
+ gprs底层封装
+ ============================================================================*/
 gprs_bspTypedef gprs_bsp = {
     .init       =   gprs_bsp_init,
     .reset      =   gprs_bsp_reset,

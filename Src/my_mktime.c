@@ -1,3 +1,12 @@
+/*
+ ============================================================================
+ Name        : my_mktime.c
+ Author      : wy
+ Version     :
+ Copyright   : Your copyright notice
+ Description : 把年月日时分秒转换成Unix时间戳
+ ============================================================================
+ */
 #include "rtc.h"
 
 #define BASE_YEAR	70	//世纪秒的年份基准，BASE_YEAR = 基准年份 - 1900

@@ -16,10 +16,10 @@
 #endif
 
 typedef struct{
-    uint8_t step;
-    uint16_t errCnt;
-    uint32_t execuTick;
-}taskManageTypedef;
+    uint8_t step;           //任务步数
+    uint16_t errCnt;        //错误数
+    uint32_t execuTick;     //执行时间
+}taskManageTypedef;         //任务管理结构体
 
 
 #endif

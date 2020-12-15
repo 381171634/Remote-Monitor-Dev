@@ -14,20 +14,20 @@ typedef enum{
 }dht11StepTypedef;
 
 typedef struct{
-    uint32_t dht11_wet_sum;
-    int      dht11_temp_sum;
-    uint16_t readCnt;
-    uint16_t dht11_wet_avg;
-    int      dht11_temp_avg;
-}dht11ResTypedef;
+    uint32_t dht11_wet_sum;     //湿度和
+    int      dht11_temp_sum;    //温度和
+    uint16_t readCnt;           //读的次数
+    uint16_t dht11_wet_avg;     //湿度均值
+    int      dht11_temp_avg;    //温度均值
+}dht11ResTypedef;               //dht11结果结构体
 
 typedef struct{
-    uint8_t wet_H;
-    uint8_t wet_L;
-    uint8_t temp_H;
-    uint8_t temp_L;
-    uint8_t sum;
-}dht11DataTypedef;
+    uint8_t wet_H;              //湿度高
+    uint8_t wet_L;              //湿度低
+    uint8_t temp_H;             //温度高
+    uint8_t temp_L;             //温度低
+    uint8_t sum;                //校验和
+}dht11DataTypedef;              //dht11单词读取数据
 
 void dht11_task();
 extern taskManageTypedef dht11_tm;

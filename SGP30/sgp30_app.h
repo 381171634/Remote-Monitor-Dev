@@ -15,12 +15,12 @@ typedef enum{
 }sgp30StepTypedef;
 
 typedef struct{
-    uint32_t tvoc_sum;
-    uint32_t co2_sum;
-    uint16_t readCnt;
-    uint32_t tvoc_arg;
-    uint32_t co2_avg;
-}sgp30ResTypedef;
+    uint32_t tvoc_sum;  //甲醛和
+    uint32_t co2_sum;   //二氧化碳和
+    uint16_t readCnt;   //读次数
+    uint32_t tvoc_arg;  //甲醛均值
+    uint32_t co2_avg;   //二氧化碳均值
+}sgp30ResTypedef;       //sgp30读结果
 
 void sgp30_task();
 

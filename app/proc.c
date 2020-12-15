@@ -29,6 +29,9 @@ static uint8_t tranBuf[PROC_MAX_LEN] = {0};
 taskManageTypedef proc_tm;
 procChannelTypedef procChan;
 
+/*============================================================================
+ 协议初始化
+ ============================================================================*/
 static void proc_init()
 {
     memset((void *)&proc_tm,0,sizeof(proc_tm));
@@ -37,6 +40,10 @@ static void proc_init()
     procChan.state = PROC_FIND_1ST_HEAD;
 }
 
+/*============================================================================
+ 协议任务
+ 初始化->上线->推送->结束
+ ============================================================================*/
 void proc_task()
 {
     uint8_t res =TRUE;
@@ -78,6 +85,10 @@ void proc_task()
     }
 }
 
+/*============================================================================
+ 上线处理
+ timeout：超时毫秒
+ ============================================================================*/
 static uint8_t proc_online(uint16_t timeout)
 {
     uint8_t res = TRUE;
@@ -118,6 +129,10 @@ static uint8_t proc_online(uint16_t timeout)
     return res;
 }
 
+/*============================================================================
+ 推送采样数据
+ timeout：超时毫秒
+ ============================================================================*/
 static uint8_t proc_publish(uint16_t timeout)
 {
     uint8_t res = TRUE;
@@ -167,11 +182,20 @@ static uint8_t proc_publish(uint16_t timeout)
     return res;
 }
 
+/*============================================================================
+ 重置搜报文状态机
+ procRBuf：协议通道
+ ============================================================================*/
 static void rstProcState(procChannelTypedef *procRBuf)
 {
     procRBuf->state = PROC_FIND_1ST_HEAD;
 }
 
+/*============================================================================
+ 搜报文
+ procRBuf：协议通道
+ timeout：超时毫秒
+ ============================================================================*/
 static uint8_t proc_getProc(procChannelTypedef *procRBuf,uint16_t timeout)
 {
     int res = FALSE;

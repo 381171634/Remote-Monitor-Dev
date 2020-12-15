@@ -1,13 +1,29 @@
+/*
+ ============================================================================
+ Name        : lowPower.c
+ Author      : wy
+ Version     :
+ Copyright   : Your copyright notice
+ Description : 低功耗处理
+ ============================================================================
+ */
+
 #include "rtc.h"
 #include "lowPower.h"
 #include "gpio.h"
 #include "usart.h"
 
+/*============================================================================
+ 低功耗RTC唤醒中断
+ ============================================================================*/
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
     HAL_NVIC_SystemReset();
 }
 
+/*============================================================================
+ 低功耗进入函数
+ ============================================================================*/
 void enter_lowPwr()
 {
     RTC_AlarmTypeDef alarm;
@@ -53,8 +69,8 @@ void enter_lowPwr()
 
     HAL_RTC_SetAlarm_IT(&hrtc,&alarm,RTC_FORMAT_BIN);
     
-    SysTick->CTRL = 0x00;//关闭定时器
-    SysTick->VAL = 0x00;//清空val,清空定时器
+    SysTick->CTRL = 0x00;   //关闭定时器
+    SysTick->VAL = 0x00;    //清空val,清空定时器
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFI);
 
 }

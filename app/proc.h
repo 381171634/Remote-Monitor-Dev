@@ -32,13 +32,13 @@ typedef enum{
 }procStepTypedef;
 
 typedef struct{
-    gprs_RBTypedef *rb;
+    gprs_RBTypedef *rb;                 //gprs底层通讯通道
 
-    uint8_t contentBuf[PROC_MAX_LEN];
-    uint16_t pWrite_contentBuf;
-    uint16_t proclen;
-    uint8_t state;
-}procChannelTypedef;
+    uint8_t contentBuf[PROC_MAX_LEN];   //报文内容
+    uint16_t pWrite_contentBuf;         //报文内容写指针
+    uint16_t proclen;                   //报文长度
+    uint8_t state;                      //状态机状态
+}procChannelTypedef;                    //协议通道
 
 extern taskManageTypedef proc_tm; 
 void proc_task();

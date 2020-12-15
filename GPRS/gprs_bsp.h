@@ -4,14 +4,16 @@
 #include "stm32f1xx_hal.h"
 #include "main.h"
 
+//底层串口环形缓存长度
 #define GPRS_RECV_BUF_LEN   1024
-//board
+//定义管脚
 #define GPRS_POWER_Port     DCDC_ENABLE_GPIO_Port
 #define GPRS_POWER_Pin      DCDC_ENABLE_Pin  
 #define GPRS_RESET_Port     GPRS_RST_GPIO_Port
 #define GPRS_RESET_Pin      GPRS_RST_Pin 
-//bsp fill
+//上电
 #define GPRS_POWER_ON       HAL_GPIO_WritePin(DCDC_ENABLE_GPIO_Port,DCDC_ENABLE_Pin,GPIO_PIN_SET)
+//掉电
 #define GPRS_POWER_OFF      HAL_GPIO_WritePin(DCDC_ENABLE_GPIO_Port,DCDC_ENABLE_Pin,GPIO_PIN_RESET)
 
 typedef struct{
@@ -24,11 +26,11 @@ typedef struct{
 }gprs_bspTypedef;
 
 typedef struct{
-    uint8_t pRecvBuf[GPRS_RECV_BUF_LEN];
-    uint16_t pW;
-    uint16_t pR;
-    uint8_t uart_idle_flag;
-}gprs_RBTypedef;
+    uint8_t pRecvBuf[GPRS_RECV_BUF_LEN];    //缓冲区
+    uint16_t pW;                            //写指针
+    uint16_t pR;                            //读指针
+    uint8_t uart_idle_flag;                 //串口空闲中断标志
+}gprs_RBTypedef;                            //串口通道结构体
 
 extern gprs_RBTypedef gprsRB;
 extern gprs_bspTypedef gprs_bsp;

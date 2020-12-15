@@ -1,3 +1,12 @@
+/*
+ ============================================================================
+ Name        : gprs_app.c
+ Author      : wy
+ Version     :
+ Copyright   : Your copyright notice
+ Description : gprs应用层
+ ============================================================================
+ */
 #include "gprs_app.h"
 #include "gprs_bsp.h"
 #include "usart.h"
@@ -7,13 +16,27 @@
 #include "rtc.h"
 #include <stdio.h>
 
+//gprs_ATcmdTx中不需要第二个期望应答
 #define GPRS_NO_HOPEACK2    0
+//gprs_ATcmdTx中不需要返回AT指令字符串
 #define GPRS_NO_BACK        0
+//服务器地址
 #define SERVER_IP           "106.13.1.239"
+//服务器端口
 #define SERVER_PORT         8888
 
 taskManageTypedef gprs_tm = {0,0,0};
 
+/*============================================================================
+ 通用AT指令发送函数
+ cmd：AT指令
+ hopeAck1：期望应答1
+ hopeAck2：期望应答2
+ pBack：返回指针
+ timeoutMs：超时 毫秒
+ retry：重试次数
+ return：成败
+ ============================================================================*/
 static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const uint8_t *hopeAck2,uint8_t *pBack,uint16_t timeoutMs,uint8_t retry )
 {
     uint8_t res = FALSE;
@@ -76,7 +99,9 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
 	return res;
 }
 
-
+/*============================================================================
+ gprs任务
+ ============================================================================*/
 void gprs_task()
 {
     uint8_t res = 0;
