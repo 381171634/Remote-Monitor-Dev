@@ -138,7 +138,7 @@ void gprs_getTime(uint8_t *timeStr)
     RTC_TimeTypeDef time;
 	uint8_t *p,*p1;
 	uint16_t i;
-    //2014-04-12,15:17:48
+
 	p = strstr(timeStr,"Update To ");
 	if(p != 0)
 	{

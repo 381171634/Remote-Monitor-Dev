@@ -3,7 +3,7 @@
 
 #include "stm32f1xx_hal.h"
 
-#define ENABLE_DBG      1
+#define ENABLE_DBG      0
 
 #if (ENABLE_DBG == 1)
 #define DBG_PRT(fmt...)   \

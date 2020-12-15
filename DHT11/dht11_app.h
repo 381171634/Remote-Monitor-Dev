@@ -4,7 +4,7 @@
 #include "stm32f1xx_hal.h"
 #include "common.h"
 
-#define DHT11_AVERAGE_CNT   3
+#define DHT11_AVERAGE_CNT   10
 
 typedef enum{
     DHT11_STEP_START = 0,
