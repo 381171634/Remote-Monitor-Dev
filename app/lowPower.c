@@ -10,6 +10,12 @@
 
 #include "rtc.h"
 #include "lowPower.h"
+#include "dht11_app.h"
+#include "dht11_bsp.h"
+#include "gprs_app.h"
+#include "sgp30_app.h"
+#include "gprs_bsp.h"
+#include "sgp30_bsp.h"
 #include "gpio.h"
 #include "usart.h"
 
@@ -29,10 +35,31 @@ void enter_lowPwr()
     RTC_AlarmTypeDef alarm;
     RTC_TimeTypeDef time;
     memset((void *)&alarm, 0, sizeof(alarm));
+
+    //任务未完成，因2分超时进入低功耗时，需要对各模块做低功耗处理
+    if(dht11_tm.step != DHT11_STEP_FINISH)
+    {
+        DHT11_POWER_OFF;
+    }
+
+    if(sgp30_tm.step != SGP30_STEP_FINISH)
+    {
+        SGP30_Reset();
+    }
+
+    if(gprs_tm.step != GPRS_STEP_FINISH)
+    {
+        GPRS_POWER_OFF;
+    }
+
     //除了控制GPRS模块的DCDC使能，其余引脚全配置成浮空输入
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_All & ~(GPIO_PIN_13 | GPIO_PIN_14));
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All & ~(DCDC_ENABLE_Pin));
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All & ~(DCDC_ENABLE_Pin | DHT11_POWER_Pin));
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_All);
+
+    
+
+    
 
     HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
 

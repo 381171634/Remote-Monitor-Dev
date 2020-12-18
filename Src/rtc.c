@@ -143,13 +143,15 @@ void gprs_getTime(uint8_t *timeStr)
 	if(p != 0)
 	{
 		p += strlen("Update To ");
+		DBG_PRT("time str:%s\n",p);
 		p1 = p;
-		while(*p1++ != 0)
+		while(*p1 != '\r' && *p1 != 0x00)
 		{
 			if(*p1 < '0' || *p1 > '9')
 			{
 				*p1 = 0;
 			}
+			p1++;
 		}
 
 		date.Year = atoi(p) - 2000;
@@ -163,6 +165,7 @@ void gprs_getTime(uint8_t *timeStr)
 		time.Minutes =atoi(p);
 		p += 3;
 		time.Seconds = atoi(p);
+
 
 		HAL_RTC_SetDate(&hrtc,&date,RTC_FORMAT_BIN);
 		HAL_RTC_SetTime(&hrtc,&time,RTC_FORMAT_BIN);
