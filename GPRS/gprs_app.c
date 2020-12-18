@@ -24,6 +24,8 @@
 #define SERVER_IP           "106.13.1.239"
 //服务器端口
 #define SERVER_PORT         8888
+//栈中at字符串长度
+#define AT_STR_STACK_LEN    256
 
 taskManageTypedef gprs_tm = {0,0,0};
 
@@ -40,7 +42,7 @@ taskManageTypedef gprs_tm = {0,0,0};
 static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const uint8_t *hopeAck2,uint8_t *pBack,uint16_t timeoutMs,uint8_t retry )
 {
     uint8_t res = FALSE;
-    uint8_t atBuf[128] = {0};
+    uint8_t atBuf[AT_STR_STACK_LEN] = {0};
     uint8_t atBufpW = 0;
     uint8_t i;
     uint32_t endTick;
@@ -90,7 +92,7 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
         {
             if(pBack != 0)
             {
-                memcpy(pBack,atBuf,128);
+                memcpy(pBack,atBuf,AT_STR_STACK_LEN);
             }
             break;
         }
@@ -105,7 +107,7 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
 void gprs_task()
 {
     uint8_t res = 0;
-    uint8_t atbufBack[128] = {0};
+    uint8_t atbufBack[AT_STR_STACK_LEN] = {0};
     uint8_t cmd[128] = {0};
 
     //运行时间未到 返回

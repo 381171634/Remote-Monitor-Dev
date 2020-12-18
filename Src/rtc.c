@@ -124,6 +124,8 @@ uint32_t getUnixTick()
 
 	retval = my_mktime(&time_t);
 
+	DBG_PRT("unix tick:%u\n",retval);
+
 	return retval;
 }
 
@@ -134,6 +136,7 @@ uint32_t getUnixTick()
  ============================================================================*/
 void gprs_getTime(uint8_t *timeStr)
 {
+	uint8_t label_cnt = 0;				//时间字符串标点符号个数
     RTC_DateTypeDef date;
     RTC_TimeTypeDef time;
 	uint8_t *p,*p1;
@@ -145,13 +148,21 @@ void gprs_getTime(uint8_t *timeStr)
 		p += strlen("Update To ");
 		DBG_PRT("time str:%s\n",p);
 		p1 = p;
-		while(*p1 != '\r' && *p1 != 0x00)
+		while(*p1 != '\r' && *p1 != 0x00 && (p1 - p) < 256)
 		{
 			if(*p1 < '0' || *p1 > '9')
 			{
 				*p1 = 0;
+				label_cnt++;
 			}
 			p1++;
+		}
+
+		//标准返回里，共有五个标点符号，否则字符串不对，不予更新时钟
+		if(label_cnt != 5)
+		{
+			DBG_PRT("time str convert Err!\n");
+			return;
 		}
 
 		date.Year = atoi(p) - 2000;
@@ -166,10 +177,23 @@ void gprs_getTime(uint8_t *timeStr)
 		p += 3;
 		time.Seconds = atoi(p);
 
+		//判断提取有效性
+		if(date.Year < 0 || date.Year > 99
+			|| date.Month < 0 || date.Month > 12
+			|| date.Date < 1 || date.Date > 31
+			|| time.Hours < 0 || time.Hours > 23
+			|| time.Minutes < 0 || time.Minutes > 59
+			|| time.Seconds < 0 || time.Seconds > 59)
+		{
+			DBG_PRT("time str convert Err!\n");
+			return;
+		}
 
 		HAL_RTC_SetDate(&hrtc,&date,RTC_FORMAT_BIN);
 		HAL_RTC_SetTime(&hrtc,&time,RTC_FORMAT_BIN);
 	}
+
+	DBG_PRT("time str convert,RTC set OK!\n");
 	
 }
 /* USER CODE END 1 */
