@@ -53,7 +53,7 @@ void enter_lowPwr()
     }
 
     //除了控制GPRS模块的DCDC使能，其余引脚全配置成浮空输入
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_All & ~(GPIO_PIN_13 | GPIO_PIN_14));
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_All /* & ~(GPIO_PIN_13 | GPIO_PIN_14) */);
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All & ~(DCDC_ENABLE_Pin | DHT11_POWER_Pin));
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_All);
 
@@ -65,15 +65,15 @@ void enter_lowPwr()
 
     DBG_PRT("time->%02d:%02d:%02d\n",time.Hours,time.Minutes,time.Seconds);
     
-    time.Seconds = 0;
-    time.Minutes += 5;
-    if(time.Minutes > 59)
-    {
-        time.Hours += 1;
-        time.Minutes %= 60;
-        if (time.Hours > 23)
-            time.Hours = 0;
-    }
+    // time.Seconds = 0;
+    // time.Minutes += 5;
+    // if(time.Minutes > 59)
+    // {
+    //     time.Hours += 1;
+    //     time.Minutes %= 60;
+    //     if (time.Hours > 23)
+    //         time.Hours = 0;
+    // }
 
     // time.Seconds += 5;
     // if(time.Seconds > 59)
@@ -88,6 +88,16 @@ void enter_lowPwr()
     //             time.Hours = 0;
     //     }
     // }
+
+
+    time.Seconds = 0;
+    time.Minutes = 0;
+    time.Hours += 1;
+    if (time.Hours > 23)
+    {
+        time.Hours = 0;
+    }
+    
     
 
     alarm.AlarmTime.Hours = time.Hours;
@@ -99,5 +109,4 @@ void enter_lowPwr()
     SysTick->CTRL = 0x00;   //关闭定时器
     SysTick->VAL = 0x00;    //清空val,清空定时器
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFI);
-
 }

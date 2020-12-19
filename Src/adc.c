@@ -165,6 +165,7 @@ void getCellVoltage()
 	adc_temp /= 90;
 	CellVoltage = adc_temp * 2 * 3300 / 4096;	//采锂电池电压时用两个大电阻分压，采得的值要乘以2
 	DBG_PRT("get CellVoltage OK:%d\n",CellVoltage);
+	HAL_ADC_Stop(&hadc1);
 	HAL_ADC_DeInit(&hadc1);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
 }
