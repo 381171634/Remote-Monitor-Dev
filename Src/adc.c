@@ -134,21 +134,39 @@ void getCellVoltage()
 	uint8_t i;
 	uint32_t adc_temp = 0 ;
 
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+	//拉低分压电阻的后级
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_15;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 	HAL_ADCEx_Calibration_Start(&hadc1);
-	for(i = 0;i < 10; i++)
+
+	//前10次丢弃
+	for(i = 0;i < 100; i++)
 	{
 		HAL_ADC_Start(&hadc1);
 		HAL_ADC_PollForConversion(&hadc1,10);
 		if(HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC))
 		{
-			adc_temp +=HAL_ADC_GetValue(&hadc1);
+			if(i >= 10)
+			{
+				adc_temp +=HAL_ADC_GetValue(&hadc1);
+			}
+			
 		} 
 	}
 
-	adc_temp /= 10;
+	adc_temp /= 90;
 	CellVoltage = adc_temp * 2 * 3300 / 4096;	//采锂电池电压时用两个大电阻分压，采得的值要乘以2
 	DBG_PRT("get CellVoltage OK:%d\n",CellVoltage);
 	HAL_ADC_DeInit(&hadc1);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
 }
 /* USER CODE END 1 */
 
