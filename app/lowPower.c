@@ -53,7 +53,9 @@ void enter_lowPwr()
         GPRS_POWER_OFF;
     }
 
-    //除了控制GPRS模块的DCDC使能，其余引脚全配置成模拟输入
+    //GPRS模块的DCDC引脚保持使能，拉低
+    //dht11的VCC引脚推挽输出高，同时DATA也被拉高
+    //其余引脚配置为模拟输入
     GPIO_InitStruct.Pin = GPIO_PIN_All;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_PULLDOWN;
@@ -71,6 +73,13 @@ void enter_lowPwr()
     GPIO_InitStruct.Pull = GPIO_PULLDOWN;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = DHT11_POWER_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(DHT11_POWER_Port, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(DHT11_POWER_Port,DHT11_POWER_Pin,GPIO_PIN_SET);
     
 
     
