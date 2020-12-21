@@ -32,6 +32,7 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
  ============================================================================*/
 void enter_lowPwr()
 {
+    GPIO_InitTypeDef GPIO_InitStruct;
     RTC_AlarmTypeDef alarm;
     RTC_TimeTypeDef time;
     memset((void *)&alarm, 0, sizeof(alarm));
@@ -52,11 +53,24 @@ void enter_lowPwr()
         GPRS_POWER_OFF;
     }
 
-    //除了控制GPRS模块的DCDC使能，其余引脚全配置成浮空输入
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_All /* & ~(GPIO_PIN_13 | GPIO_PIN_14) */);
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All & ~(DCDC_ENABLE_Pin | DHT11_POWER_Pin));
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_All);
+    //除了控制GPRS模块的DCDC使能，其余引脚全配置成模拟输入
+    GPIO_InitStruct.Pin = GPIO_PIN_All;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    GPIO_InitStruct.Pin = GPIO_PIN_All & ~(DCDC_ENABLE_Pin);
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_All;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
     
 
     
@@ -103,10 +117,11 @@ void enter_lowPwr()
     alarm.AlarmTime.Hours = time.Hours;
     alarm.AlarmTime.Minutes = time.Minutes;
     alarm.AlarmTime.Seconds = time.Seconds;
-
+    
     HAL_RTC_SetAlarm_IT(&hrtc,&alarm,RTC_FORMAT_BIN);
     
     SysTick->CTRL = 0x00;   //关闭定时器
     SysTick->VAL = 0x00;    //清空val,清空定时器
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFI);
+    //HAL_PWR_EnterSTANDBYMode();
 }
