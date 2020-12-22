@@ -49,7 +49,7 @@ uint32_t CellVoltage = 0;
 ADC_HandleTypeDef hadc1;
 
 /* ADC1 init function */
-void MX_ADC1_Init(void)
+void MX_ADC1_Init(uint32_t channel)
 {
 	ADC_ChannelConfTypeDef sConfig;
 
@@ -69,9 +69,9 @@ void MX_ADC1_Init(void)
 
 	/**Configure Regular Channel 
     */
-	sConfig.Channel = ADC_CHANNEL_0;
+	sConfig.Channel = channel;
 	sConfig.Rank = ADC_REGULAR_RANK_1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_13CYCLES_5;
+	sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
 	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
 	{
 		_Error_Handler(__FILE__, __LINE__);
@@ -133,6 +133,7 @@ void getCellVoltage()
 {
 	uint8_t i;
 	uint32_t adc_temp = 0 ;
+	uint32_t ad17 = 0;
 
 	GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -145,9 +146,33 @@ void getCellVoltage()
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-	HAL_ADCEx_Calibration_Start(&hadc1);
+	MX_ADC1_Init(ADC_CHANNEL_17);
 
+	HAL_ADCEx_Calibration_Start(&hadc1);
+	//使用内部1.2V基准
 	//前10次丢弃
+	//先获取内部1.2V的AD采样值
+	for(i = 0;i < 100; i++)
+	{
+		HAL_ADC_Start(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1,10);
+		if(HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC))
+		{
+			if(i >= 10)
+			{
+				ad17 +=HAL_ADC_GetValue(&hadc1);
+			}
+			
+		} 
+	}
+
+	ad17 /= 90;
+
+	HAL_ADC_Stop(&hadc1);
+	HAL_ADC_DeInit(&hadc1);
+	//切到AD0通道
+	MX_ADC1_Init(ADC_CHANNEL_0);
+
 	for(i = 0;i < 100; i++)
 	{
 		HAL_ADC_Start(&hadc1);
@@ -163,7 +188,7 @@ void getCellVoltage()
 	}
 
 	adc_temp /= 90;
-	CellVoltage = adc_temp * 2 * 3300 / 4096;	//采锂电池电压时用两个大电阻分压，采得的值要乘以2
+	CellVoltage = 1.2 * adc_temp / ad17 * 2;	//采锂电池电压时用两个大电阻分压，采得的值要乘以2
 	DBG_PRT("get CellVoltage OK:%d\n",CellVoltage);
 	HAL_ADC_Stop(&hadc1);
 	HAL_ADC_DeInit(&hadc1);
