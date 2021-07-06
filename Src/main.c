@@ -37,13 +37,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "stm32f1xx_hal.h"
-#include "adc.h"
-#include "rtc.h"
-#include "usart.h"
-#include "gpio.h"
-
+#include "includes.h"
 
 /* USER CODE BEGIN Includes */
 

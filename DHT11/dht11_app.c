@@ -7,9 +7,7 @@
  Description : dht11应用层
  ============================================================================
  */
-#include "dht11_bsp.h"
-#include "dht11_app.h"
-#include "common.h"
+#include "includes.h"
 
 taskManageTypedef dht11_tm = {DHT11_STEP_START,0,0};
 dht11ResTypedef dht11Res;
@@ -23,8 +21,6 @@ static uint8_t app_dht11Read(dht11DataTypedef *pSrc);
 void dht11_task()
 {
     int i;
-    uint8_t res;
-    int tempRead;
     dht11DataTypedef readData = {0,0,0,0,0};
 
     //运行时间未到 返回

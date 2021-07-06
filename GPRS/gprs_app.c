@@ -7,14 +7,7 @@
  Description : gprs应用层
  ============================================================================
  */
-#include "gprs_app.h"
-#include "gprs_bsp.h"
-#include "usart.h"
-#include "dht11_app.h"
-#include "sgp30_app.h"
-#include "proc.h"
-#include "rtc.h"
-#include <stdio.h>
+#include "includes.h"
 
 //gprs_ATcmdTx中不需要第二个期望应答
 #define GPRS_NO_HOPEACK2    0
@@ -52,7 +45,7 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
         endTick = gprs_bsp.getTickMs() + timeoutMs;
         memset(atBuf,0,sizeof(atBuf));
         atBufpW = 0;
-        if(gprs_bsp.write((uint8_t *)cmd,strlen(cmd)) == TRUE)
+        if(gprs_bsp.write((uint8_t *)cmd,strlen((char const *)cmd)) == TRUE)
         {
             while(1)
             {
@@ -64,14 +57,14 @@ static uint16_t gprs_ATcmdTx(const uint8_t *cmd,const uint8_t *hopeAck1,const ui
                     break;
                 }
 
-                if(strstr(atBuf,hopeAck1) != 0)
+                if(strstr((char const *)atBuf,(char const *)hopeAck1) != 0)
                 {
                     res = TRUE;
                     break;
                 }
                 else if(hopeAck2 != 0)
                 {
-                    if(strstr(atBuf,hopeAck2) != 0)
+                    if(strstr((char const *)atBuf,(char const *)hopeAck2) != 0)
                     {
                         res = TRUE;
                         break;
@@ -184,7 +177,7 @@ void gprs_task()
             res = gprs_ATcmdTx("AT+XIIC?\r","+XIIC:    1","+XIIC:    0",atbufBack,1000,10);  
             if(res == TRUE)
             {
-                if(strstr(atbufBack,"+XIIC:    1") != 0)
+                if(strstr((char const *)atbufBack,"+XIIC:    1") != 0)
                 {
                     DBG_PRT("gprs PPP OK!\n");
                     gprs_tm.step++;
@@ -246,7 +239,7 @@ void gprs_task()
         case GPRS_STEP_TRANS:
             if(dht11_tm.step == DHT11_STEP_FINISH && sgp30_tm.step == SGP30_STEP_FINISH)
             {
-                snprintf(cmd,128,"AT+TCPTRANS=%s,%d\r",SERVER_IP,SERVER_PORT);
+                snprintf((char*)cmd,128,"AT+TCPTRANS=%s,%d\r",SERVER_IP,SERVER_PORT);
                 res = gprs_ATcmdTx(cmd,"OK",GPRS_NO_HOPEACK2,GPRS_NO_BACK,5000,3);  
                 if(res == TRUE)
                 {

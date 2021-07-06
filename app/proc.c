@@ -10,11 +10,7 @@
  ============================================================================
  */
 
-#include "proc.h"
-#include "rtc.h"
-#include "adc.h"
-#include "dht11_app.h"
-#include "sgp30_app.h"
+#include "includes.h"
 
 #define DEV_ID  "0535202012080001"  //4位区号+4位年+4位月日+4位顺序号
 
@@ -137,7 +133,6 @@ static uint8_t proc_publish(uint16_t timeout)
 {
     uint8_t res = TRUE;
     uint16_t len_t = 4;
-    uint32_t tick = 0;
     SampleDataTypedef data;
 
     data.timeTick = getUnixTick();

@@ -8,16 +8,7 @@
  ============================================================================
  */
 
-#include "rtc.h"
-#include "lowPower.h"
-#include "dht11_app.h"
-#include "dht11_bsp.h"
-#include "gprs_app.h"
-#include "sgp30_app.h"
-#include "gprs_bsp.h"
-#include "sgp30_bsp.h"
-#include "gpio.h"
-#include "usart.h"
+#include "includes.h"
 
 /*============================================================================
  低功耗RTC唤醒中断

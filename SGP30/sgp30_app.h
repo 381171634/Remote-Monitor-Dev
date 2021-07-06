@@ -2,6 +2,7 @@
 #define _SGP30_APP_H
 
 #include "common.h"
+#include "sgp30_bsp.h" 
 
 #define SGP30_AVERAGE_CNT   10
 

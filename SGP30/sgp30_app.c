@@ -7,11 +7,7 @@
  Description : sgp30应用层
  ============================================================================
  */
-#include "sgp30_app.h"
-#include "sgp30_bsp.h"
-#include "main.h"
-#include "dht11_app.h"
-#include "math.h"
+#include "includes.h"
 
 taskManageTypedef sgp30_tm = {0,0,0};
 sgp30ResTypedef sgp30Res;

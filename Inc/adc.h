@@ -61,6 +61,8 @@ extern void _Error_Handler(char *, int);
 
 void MX_ADC1_Init(uint32_t channel);
 
+void getCellVoltage();
+
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

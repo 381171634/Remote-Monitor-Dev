@@ -38,9 +38,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "rtc.h"
-#include "common.h"
-#include <string.h>
+#include "includes.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -140,9 +138,8 @@ void gprs_getTime(uint8_t *timeStr)
     RTC_DateTypeDef date;
     RTC_TimeTypeDef time;
 	uint8_t *p,*p1;
-	uint16_t i;
 
-	p = strstr(timeStr,"Update To ");
+	p = (uint8_t *)strstr((char const *)timeStr,"Update To ");
 	if(p != 0)
 	{
 		p += strlen("Update To ");
@@ -165,25 +162,25 @@ void gprs_getTime(uint8_t *timeStr)
 			return;
 		}
 
-		date.Year = atoi(p) - 2000;
+		date.Year = atoi((char const *)p) - 2000;
 		p += 5;
-		date.Month = atoi(p);
+		date.Month = atoi((char const *)p);
 		p += 3;
-		date.Date = atoi(p);
+		date.Date = atoi((char const *)p);
 		p += 3;
-		time.Hours = atoi(p);
+		time.Hours = atoi((char const *)p);
 		p += 3;
-		time.Minutes =atoi(p);
+		time.Minutes =atoi((char const *)p);
 		p += 3;
-		time.Seconds = atoi(p);
+		time.Seconds = atoi((char const *)p);
 
 		//判断提取有效性
-		if(date.Year < 0 || date.Year > 99
-			|| date.Month < 0 || date.Month > 12
+		if(date.Year > 99
+			|| date.Month > 12
 			|| date.Date < 1 || date.Date > 31
-			|| time.Hours < 0 || time.Hours > 23
-			|| time.Minutes < 0 || time.Minutes > 59
-			|| time.Seconds < 0 || time.Seconds > 59)
+			|| time.Hours > 23
+			|| time.Minutes > 59
+			|| time.Seconds > 59)
 		{
 			DBG_PRT("time str convert Err!\n");
 			return;

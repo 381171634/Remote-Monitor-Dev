@@ -3,6 +3,7 @@
 
 #include "stm32f1xx_hal.h"
 #include "common.h"
+#include "dht11_bsp.h"
 
 #define DHT11_AVERAGE_CNT   10
 

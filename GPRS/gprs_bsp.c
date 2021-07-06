@@ -10,6 +10,7 @@
 #include "gprs_bsp.h"
 #include "usart.h"
 #include "stm32f1xx_it.h"
+#include <string.h>
 
 gprs_RBTypedef gprsRB;
 
@@ -20,7 +21,6 @@ gprs_RBTypedef gprsRB;
  ============================================================================*/
 void USART1_IRQHandler()
 {
-    uint8_t idle_clr;
     uint32_t isrflags   = READ_REG(huart1.Instance->SR);
     if(isrflags & (UART_FLAG_RXNE | UART_FLAG_IDLE) )
     {

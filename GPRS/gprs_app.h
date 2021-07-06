@@ -3,6 +3,7 @@
 
 #include "stm32f1xx_hal.h"
 #include "common.h"
+#include "gprs_bsp.h"
 
 typedef enum{
     GPRS_STEP_POWER_ON = 0,
